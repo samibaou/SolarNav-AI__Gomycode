@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: solarnav-ai
+    runtime: python
+    plan: free
+    branch: Dev
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: N2YO_API_KEY
+        sync: false
+      - key: NASA_API_KEY
+        sync: false
+      - key: NIM_BASE_URL
+        sync: false
+      - key: NIM_API_KEY
+        sync: false
+      - key: NIM_MODEL
+        sync: false
