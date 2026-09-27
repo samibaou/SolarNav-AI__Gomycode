@@ -88,3 +88,18 @@ cd frontend && npm test
 ```
 
 See `docs/` for architecture, API contract, ownership, test strategy and Git workflow.
+
+## Optimal-angle AI model (satellite / lunar base)
+
+Real satellite position (N2YO) + real sun geometry (Skyfield) + hybrid physics/ExtraTrees model
+predicting the optimal panel tilt (0.45° mean error, 99.9 % of max energy).
+
+```bash
+python scripts/generate_angle_dataset.py
+python scripts/train_angle_model.py
+python scripts/validate_angle_model.py
+python scripts/predict_angle.py --live 25544 --dust 30
+```
+
+Requires `N2YO_API_KEY` in `.env` (works offline with `data/cache/tle_cache.json`).
+Details (in French): [`docs/ANGLE_MODEL.md`](docs/ANGLE_MODEL.md).
