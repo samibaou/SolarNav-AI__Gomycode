@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Journal — SolarNav</title>
+<meta name="description" content="Journal des évènements SolarNav : changements d’angle, entrées et sorties d’ombre, entrées refusées par le modèle." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23f0a01e'/><circle cx='16' cy='16' r='6' fill='%23fff8e8'/></svg>" />
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <defs>
+  <g id="i-grid"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></g>
+  <g id="i-cube"><path d="M12 2.6 20.6 7v10L12 21.4 3.4 17V7z"/><path d="M3.4 7 12 11.6 20.6 7"/><path d="M12 11.6v9.8"/></g>
+  <g id="i-chart"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M21 20H3"/></g>
+  <g id="i-help"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .9-1 1.6v.4"/><path d="M12 17.1h.01"/></g>
+  <g id="i-shield"><path d="M12 2.8 20 6v6c0 5-3.4 8-8 9.2C7.4 20 4 17 4 12V6z"/></g>
+  <g id="i-alert"><path d="M12 3.6 2.6 20h18.8z"/><path d="M12 9.6v4.2M12 17h.01"/></g>
+  <g id="i-target"><circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="3.6"/><path d="M12 1.6v3M12 19.4v3M1.6 12h3M19.4 12h3"/></g>
+  <g id="i-cpu"><rect x="6" y="6" width="12" height="12" rx="2.5"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></g>
+  <g id="i-plug"><path d="M9 2v6M15 2v6"/><path d="M6 8h12v3a6 6 0 0 1-12 0z"/><path d="M12 17v5"/></g>
+  <g id="i-play"><path d="M7 4.8 19 12 7 19.2z"/></g>
+  <g id="i-pause"><rect x="6.5" y="5" width="4" height="14" rx="1.4"/><rect x="13.5" y="5" width="4" height="14" rx="1.4"/></g>
+ </defs>
+</svg>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="15" class="bm-disc"/><path class="bm-ray" d="M17 5.6v3.2M17 25.2v3.2M5.6 17h3.2M25.2 17h3.2M9 9l2.3 2.3M22.7 22.7 25 25M25 9l-2.3 2.3M11.3 22.7 9 25"/><circle cx="17" cy="17" r="5.4" class="bm-core"/></svg>
+      </span>
+      <span class="brand-name">SolarNav</span>
+    </div>
+
+    <p class="nav-label">Tableau de bord</p>
+    <nav class="nav">
+      <a class="nav-item" href="index.html#sec-kpi"><svg class="ic" viewBox="0 0 24 24"><use href="#i-grid"/></svg><span>Vue d’ensemble</span></a>
+      <a class="nav-item" href="index.html#sec-twin"><svg class="ic" viewBox="0 0 24 24"><use href="#i-cube"/></svg><span>Jumeau 3D</span></a>
+      <a class="nav-item" href="index.html#sec-control"><svg class="ic" viewBox="0 0 24 24"><use href="#i-target"/></svg><span>Angle appliqué</span></a>
+      <a class="nav-item" href="index.html#sec-inputs"><svg class="ic" viewBox="0 0 24 24"><use href="#i-plug"/></svg><span>Entrées du modèle</span></a>
+      <a class="nav-item" href="index.html#sec-analytics"><svg class="ic" viewBox="0 0 24 24"><use href="#i-chart"/></svg><span>Analytique</span></a>
+      <a class="nav-item" href="index.html#sec-perf"><svg class="ic" viewBox="0 0 24 24"><use href="#i-cpu"/></svg><span>Performance</span></a>
+    </nav>
+
+    <p class="nav-label">Système</p>
+    <nav class="nav">
+      <a class="nav-item is-active" href="journal.html"><svg class="ic" viewBox="0 0 24 24"><use href="#i-shield"/></svg><span>Journal</span><span class="nav-badge" id="navLogs">0</span></a>
+      <a class="nav-item" href="index.html#sec-about"><svg class="ic" viewBox="0 0 24 24"><use href="#i-help"/></svg><span>Intégration</span></a>
+    </nav>
+
+    <a class="side-partners" href="index.html#sec-about" title="Un projet GOMYCODE × NVIDIA">
+      <span>Un projet</span>
+      <img class="gmc" src="assets/img/gomycode.png" alt="GOMYCODE" />
+      <img class="nv" src="assets/img/nvidia.png" alt="NVIDIA" />
+    </a>
+
+    <div class="side-card">
+      <div class="side-card-bg" aria-hidden="true"></div>
+      <div class="side-card-top"><span class="pulse"></span><span>Journal local</span></div>
+      <p class="side-card-title" id="sideScope">Session en cours</p>
+      <div class="side-card-rows">
+        <div><span>Évènements</span><b id="sideCount">0</b></div>
+        <div><span>Conservés</span><b>500 max</b></div>
+      </div>
+      <div class="side-bar"><i id="sideBar" style="width:0%"></i></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <main class="scroll">
+
+      <section class="page-head">
+        <div>
+          <h1>Journal</h1>
+          <p>Ce que le système a fait, et pourquoi &mdash; <b id="logRange">aucun évènement</b></p>
+        </div>
+        <div class="clock"><b id="clockTime">--:--</b><i>dernier évènement</i></div>
+      </section>
+
+      <section class="kpis">
+        <article class="kpi">
+          <header><span>Mouvements d’angle</span></header>
+          <p class="kpi-val" id="cMove">0</p>
+          <footer><span class="chip">consignes envoyées</span></footer>
+        </article>
+        <article class="kpi">
+          <header><span>Entrées / sorties d’ombre</span></header>
+          <p class="kpi-val" id="cHold">0</p>
+          <footer><span class="chip">transitions d’exposition</span></footer>
+        </article>
+        <article class="kpi">
+          <header><span>Anomalies</span></header>
+          <p class="kpi-val" id="cWarn">0</p>
+          <footer><span class="chip">entrées refusées, alertes</span></footer>
+        </article>
+        <article class="kpi">
+          <header><span>Amplitude cumulée</span></header>
+          <p class="kpi-val" id="cDeg">0<small>°</small></p>
+          <footer><span class="chip">somme des déplacements</span></footer>
+        </article>
+      </section>
+
+      <section class="card" id="sec-log">
+        <header class="card-head">
+          <div><h2>Évènements</h2><p class="card-sub">Du plus récent au plus ancien</p></div>
+          <span class="pill" id="logLive">en direct</span>
+        </header>
+        <ul class="log log--full" id="log"><li class="log-empty">Aucun évènement enregistré.</li></ul>
+      </section>
+
+      <footer class="page-foot">
+        <span>SolarNav &mdash; le journal est conservé dans ce navigateur, le temps de la session</span>
+        <span>Un projet GOMYCODE &times; NVIDIA</span>
+      </footer>
+    </main>
+  </div>
+</div>
+
+<script type="module" src="assets/js/journal.js"></script>
+</body>
+</html>

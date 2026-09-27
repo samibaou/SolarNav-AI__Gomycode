@@ -1,0 +1,931 @@
+{
+ "_comment": "Exemple de prevision pour SolarNav. Copiez en data/forecast.json pour l'afficher. Remplacez-la par la prevision issue de votre base.",
+ "generated_at": 1790467200000,
+ "source": "exemple (gabarit de reference)",
+ "days": [
+  {
+   "date": "2026-09-27",
+   "energy_pct": 81.3,
+   "peak_angle": 31,
+   "min_angle": 27,
+   "sunlit_pct": 50,
+   "dust_level": 9,
+   "temp_max": 68,
+   "confidence": 0.95,
+   "hours": [
+    {
+     "h": 0,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 1,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 2,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 3,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 4,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 5,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 6,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 7,
+     "energy": 0.342,
+     "angle": 83.5
+    },
+    {
+     "h": 8,
+     "energy": 0.486,
+     "angle": 67.5
+    },
+    {
+     "h": 9,
+     "energy": 0.548,
+     "angle": 53
+    },
+    {
+     "h": 10,
+     "energy": 0.571,
+     "angle": 41
+    },
+    {
+     "h": 11,
+     "energy": 0.576,
+     "angle": 32
+    },
+    {
+     "h": 12,
+     "energy": 0.575,
+     "angle": 27.5
+    },
+    {
+     "h": 13,
+     "energy": 0.575,
+     "angle": 27
+    },
+    {
+     "h": 14,
+     "energy": 0.576,
+     "angle": 31
+    },
+    {
+     "h": 15,
+     "energy": 0.573,
+     "angle": 39
+    },
+    {
+     "h": 16,
+     "energy": 0.555,
+     "angle": 50.5
+    },
+    {
+     "h": 17,
+     "energy": 0.503,
+     "angle": 64.5
+    },
+    {
+     "h": 18,
+     "energy": 0.382,
+     "angle": 80.5
+    },
+    {
+     "h": 19,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 20,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 21,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 22,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 23,
+     "energy": 0,
+     "angle": 0
+    }
+   ]
+  },
+  {
+   "date": "2026-09-28",
+   "energy_pct": 77.6,
+   "peak_angle": 34.5,
+   "min_angle": 29,
+   "sunlit_pct": 50,
+   "dust_level": 14.6,
+   "temp_max": 68,
+   "confidence": 0.9,
+   "hours": [
+    {
+     "h": 0,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 1,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 2,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 3,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 4,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 5,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 6,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 7,
+     "energy": 0.335,
+     "angle": 86.5
+    },
+    {
+     "h": 8,
+     "energy": 0.47,
+     "angle": 71
+    },
+    {
+     "h": 9,
+     "energy": 0.525,
+     "angle": 56
+    },
+    {
+     "h": 10,
+     "energy": 0.543,
+     "angle": 43.5
+    },
+    {
+     "h": 11,
+     "energy": 0.545,
+     "angle": 34.5
+    },
+    {
+     "h": 12,
+     "energy": 0.543,
+     "angle": 29.5
+    },
+    {
+     "h": 13,
+     "energy": 0.543,
+     "angle": 29
+    },
+    {
+     "h": 14,
+     "energy": 0.545,
+     "angle": 33
+    },
+    {
+     "h": 15,
+     "energy": 0.544,
+     "angle": 41.5
+    },
+    {
+     "h": 16,
+     "energy": 0.53,
+     "angle": 53.5
+    },
+    {
+     "h": 17,
+     "energy": 0.486,
+     "angle": 68
+    },
+    {
+     "h": 18,
+     "energy": 0.373,
+     "angle": 83.5
+    },
+    {
+     "h": 19,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 20,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 21,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 22,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 23,
+     "energy": 0,
+     "angle": 0
+    }
+   ]
+  },
+  {
+   "date": "2026-09-29",
+   "energy_pct": 78.4,
+   "peak_angle": 34,
+   "min_angle": 28.5,
+   "sunlit_pct": 50,
+   "dust_level": 13.4,
+   "temp_max": 68,
+   "confidence": 0.86,
+   "hours": [
+    {
+     "h": 0,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 1,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 2,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 3,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 4,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 5,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 6,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 7,
+     "energy": 0.336,
+     "angle": 86
+    },
+    {
+     "h": 8,
+     "energy": 0.474,
+     "angle": 70
+    },
+    {
+     "h": 9,
+     "energy": 0.529,
+     "angle": 55.5
+    },
+    {
+     "h": 10,
+     "energy": 0.548,
+     "angle": 43
+    },
+    {
+     "h": 11,
+     "energy": 0.551,
+     "angle": 34
+    },
+    {
+     "h": 12,
+     "energy": 0.55,
+     "angle": 29
+    },
+    {
+     "h": 13,
+     "energy": 0.55,
+     "angle": 28.5
+    },
+    {
+     "h": 14,
+     "energy": 0.551,
+     "angle": 32.5
+    },
+    {
+     "h": 15,
+     "energy": 0.55,
+     "angle": 41
+    },
+    {
+     "h": 16,
+     "energy": 0.535,
+     "angle": 53
+    },
+    {
+     "h": 17,
+     "energy": 0.489,
+     "angle": 67
+    },
+    {
+     "h": 18,
+     "energy": 0.375,
+     "angle": 83
+    },
+    {
+     "h": 19,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 20,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 21,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 22,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 23,
+     "energy": 0,
+     "angle": 0
+    }
+   ]
+  },
+  {
+   "date": "2026-09-30",
+   "energy_pct": 78,
+   "peak_angle": 34,
+   "min_angle": 28.5,
+   "sunlit_pct": 50,
+   "dust_level": 14,
+   "temp_max": 68,
+   "confidence": 0.81,
+   "hours": [
+    {
+     "h": 0,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 1,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 2,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 3,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 4,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 5,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 6,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 7,
+     "energy": 0.336,
+     "angle": 86.5
+    },
+    {
+     "h": 8,
+     "energy": 0.472,
+     "angle": 70.5
+    },
+    {
+     "h": 9,
+     "energy": 0.527,
+     "angle": 56
+    },
+    {
+     "h": 10,
+     "energy": 0.545,
+     "angle": 43.5
+    },
+    {
+     "h": 11,
+     "energy": 0.548,
+     "angle": 34
+    },
+    {
+     "h": 12,
+     "energy": 0.547,
+     "angle": 29
+    },
+    {
+     "h": 13,
+     "energy": 0.546,
+     "angle": 28.5
+    },
+    {
+     "h": 14,
+     "energy": 0.548,
+     "angle": 33
+    },
+    {
+     "h": 15,
+     "energy": 0.547,
+     "angle": 41.5
+    },
+    {
+     "h": 16,
+     "energy": 0.533,
+     "angle": 53
+    },
+    {
+     "h": 17,
+     "energy": 0.487,
+     "angle": 67.5
+    },
+    {
+     "h": 18,
+     "energy": 0.374,
+     "angle": 83
+    },
+    {
+     "h": 19,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 20,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 21,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 22,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 23,
+     "energy": 0,
+     "angle": 0
+    }
+   ]
+  },
+  {
+   "date": "2026-10-01",
+   "energy_pct": 73.7,
+   "peak_angle": 45,
+   "min_angle": 32,
+   "sunlit_pct": 50,
+   "dust_level": 20.9,
+   "temp_max": 68,
+   "confidence": 0.77,
+   "hours": [
+    {
+     "h": 0,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 1,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 2,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 3,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 4,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 5,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 6,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 7,
+     "energy": 0.328,
+     "angle": 90
+    },
+    {
+     "h": 8,
+     "energy": 0.454,
+     "angle": 74.5
+    },
+    {
+     "h": 9,
+     "energy": 0.5,
+     "angle": 60
+    },
+    {
+     "h": 10,
+     "energy": 0.512,
+     "angle": 47.5
+    },
+    {
+     "h": 11,
+     "energy": 0.511,
+     "angle": 38
+    },
+    {
+     "h": 12,
+     "energy": 0.508,
+     "angle": 32.5
+    },
+    {
+     "h": 13,
+     "energy": 0.508,
+     "angle": 32
+    },
+    {
+     "h": 14,
+     "energy": 0.51,
+     "angle": 36.5
+    },
+    {
+     "h": 15,
+     "energy": 0.512,
+     "angle": 45
+    },
+    {
+     "h": 16,
+     "energy": 0.504,
+     "angle": 57.5
+    },
+    {
+     "h": 17,
+     "energy": 0.468,
+     "angle": 71.5
+    },
+    {
+     "h": 18,
+     "energy": 0.364,
+     "angle": 87
+    },
+    {
+     "h": 19,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 20,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 21,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 22,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 23,
+     "energy": 0,
+     "angle": 0
+    }
+   ]
+  },
+  {
+   "date": "2026-10-02",
+   "energy_pct": 71.6,
+   "peak_angle": 49.5,
+   "min_angle": 34,
+   "sunlit_pct": 50,
+   "dust_level": 24.4,
+   "temp_max": 68,
+   "confidence": 0.72,
+   "hours": [
+    {
+     "h": 0,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 1,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 2,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 3,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 4,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 5,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 6,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 7,
+     "energy": 0.324,
+     "angle": 90
+    },
+    {
+     "h": 8,
+     "energy": 0.446,
+     "angle": 77
+    },
+    {
+     "h": 9,
+     "energy": 0.487,
+     "angle": 62.5
+    },
+    {
+     "h": 10,
+     "energy": 0.496,
+     "angle": 49.5
+    },
+    {
+     "h": 11,
+     "energy": 0.493,
+     "angle": 40
+    },
+    {
+     "h": 12,
+     "energy": 0.489,
+     "angle": 34.5
+    },
+    {
+     "h": 13,
+     "energy": 0.488,
+     "angle": 34
+    },
+    {
+     "h": 14,
+     "energy": 0.492,
+     "angle": 38.5
+    },
+    {
+     "h": 15,
+     "energy": 0.496,
+     "angle": 47.5
+    },
+    {
+     "h": 16,
+     "energy": 0.491,
+     "angle": 59.5
+    },
+    {
+     "h": 17,
+     "energy": 0.458,
+     "angle": 74
+    },
+    {
+     "h": 18,
+     "energy": 0.36,
+     "angle": 89
+    },
+    {
+     "h": 19,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 20,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 21,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 22,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 23,
+     "energy": 0,
+     "angle": 0
+    }
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "energy_pct": 72.7,
+   "peak_angle": 46,
+   "min_angle": 33,
+   "sunlit_pct": 50,
+   "dust_level": 22.5,
+   "temp_max": 68,
+   "confidence": 0.68,
+   "hours": [
+    {
+     "h": 0,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 1,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 2,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 3,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 4,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 5,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 6,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 7,
+     "energy": 0.326,
+     "angle": 90
+    },
+    {
+     "h": 8,
+     "energy": 0.45,
+     "angle": 75.5
+    },
+    {
+     "h": 9,
+     "energy": 0.494,
+     "angle": 61
+    },
+    {
+     "h": 10,
+     "energy": 0.504,
+     "angle": 48.5
+    },
+    {
+     "h": 11,
+     "energy": 0.502,
+     "angle": 39
+    },
+    {
+     "h": 12,
+     "energy": 0.499,
+     "angle": 33.5
+    },
+    {
+     "h": 13,
+     "energy": 0.499,
+     "angle": 33
+    },
+    {
+     "h": 14,
+     "energy": 0.502,
+     "angle": 37.5
+    },
+    {
+     "h": 15,
+     "energy": 0.505,
+     "angle": 46
+    },
+    {
+     "h": 16,
+     "energy": 0.498,
+     "angle": 58.5
+    },
+    {
+     "h": 17,
+     "energy": 0.463,
+     "angle": 72.5
+    },
+    {
+     "h": 18,
+     "energy": 0.362,
+     "angle": 88
+    },
+    {
+     "h": 19,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 20,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 21,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 22,
+     "energy": 0,
+     "angle": 0
+    },
+    {
+     "h": 23,
+     "energy": 0,
+     "angle": 0
+    }
+   ]
+  }
+ ]
+}
