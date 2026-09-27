@@ -1,0 +1,1856 @@
+{
+ "_comment": "Jeu de trames de reference pour SolarNav. Copiez ce fichier en data/telemetry.json pour que le tableau de bord le rejoue. Il ne remplace pas la simulation du projet.",
+ "_contract": "https://github.com/ — voir README, section Integration",
+ "frames": [
+  {
+   "t": 1769580000000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 0,
+   "sun_azimuth": 40,
+   "is_sunlit": true,
+   "dust_level": 8,
+   "surface_temp": -18,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769580060000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 5.41,
+   "sun_azimuth": 43.9,
+   "is_sunlit": true,
+   "dust_level": 8.7,
+   "surface_temp": -8,
+   "angle_optimal": 89.5
+  },
+  {
+   "t": 1769580120000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 10.75,
+   "sun_azimuth": 47.8,
+   "is_sunlit": true,
+   "dust_level": 9.3,
+   "surface_temp": 1.7,
+   "angle_optimal": 84.5
+  },
+  {
+   "t": 1769580180000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 15.96,
+   "sun_azimuth": 51.7,
+   "is_sunlit": true,
+   "dust_level": 9.9,
+   "surface_temp": 10.9,
+   "angle_optimal": 80
+  },
+  {
+   "t": 1769580240000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 20.96,
+   "sun_azimuth": 55.5,
+   "is_sunlit": true,
+   "dust_level": 10.5,
+   "surface_temp": 19.5,
+   "angle_optimal": 75
+  },
+  {
+   "t": 1769580300000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 25.71,
+   "sun_azimuth": 59.4,
+   "is_sunlit": true,
+   "dust_level": 11.1,
+   "surface_temp": 27.2,
+   "angle_optimal": 71
+  },
+  {
+   "t": 1769580360000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 30.16,
+   "sun_azimuth": 63.3,
+   "is_sunlit": true,
+   "dust_level": 11.6,
+   "surface_temp": 34,
+   "angle_optimal": 66.5
+  },
+  {
+   "t": 1769580420000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 34.26,
+   "sun_azimuth": 67.2,
+   "is_sunlit": true,
+   "dust_level": 12.1,
+   "surface_temp": 40.1,
+   "angle_optimal": 63
+  },
+  {
+   "t": 1769580480000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 37.99,
+   "sun_azimuth": 71.1,
+   "is_sunlit": true,
+   "dust_level": 12.5,
+   "surface_temp": 45.4,
+   "angle_optimal": 59
+  },
+  {
+   "t": 1769580540000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 41.32,
+   "sun_azimuth": 75,
+   "is_sunlit": true,
+   "dust_level": 12.8,
+   "surface_temp": 50.1,
+   "angle_optimal": 56
+  },
+  {
+   "t": 1769580600000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 44.25,
+   "sun_azimuth": 78.8,
+   "is_sunlit": true,
+   "dust_level": 13.1,
+   "surface_temp": 54.5,
+   "angle_optimal": 53
+  },
+  {
+   "t": 1769580660000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 46.78,
+   "sun_azimuth": 82.7,
+   "is_sunlit": true,
+   "dust_level": 13.3,
+   "surface_temp": 58.7,
+   "angle_optimal": 50.5
+  },
+  {
+   "t": 1769580720000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 48.92,
+   "sun_azimuth": 86.6,
+   "is_sunlit": true,
+   "dust_level": 13.4,
+   "surface_temp": 62.9,
+   "angle_optimal": 48.5
+  },
+  {
+   "t": 1769580780000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 50.7,
+   "sun_azimuth": 90.5,
+   "is_sunlit": true,
+   "dust_level": 13.5,
+   "surface_temp": 67.3,
+   "angle_optimal": 46.5
+  },
+  {
+   "t": 1769580840000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 52.14,
+   "sun_azimuth": 94.4,
+   "is_sunlit": true,
+   "dust_level": 13.4,
+   "surface_temp": 71.9,
+   "angle_optimal": 45
+  },
+  {
+   "t": 1769580900000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 53.27,
+   "sun_azimuth": 98.3,
+   "is_sunlit": true,
+   "dust_level": 13.4,
+   "surface_temp": 76.8,
+   "angle_optimal": 44
+  },
+  {
+   "t": 1769580960000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 54.14,
+   "sun_azimuth": 102.1,
+   "is_sunlit": true,
+   "dust_level": 13.2,
+   "surface_temp": 81.8,
+   "angle_optimal": 43
+  },
+  {
+   "t": 1769581020000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 54.79,
+   "sun_azimuth": 106,
+   "is_sunlit": true,
+   "dust_level": 13,
+   "surface_temp": 86.8,
+   "angle_optimal": 42.5
+  },
+  {
+   "t": 1769581080000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.25,
+   "sun_azimuth": 109.9,
+   "is_sunlit": true,
+   "dust_level": 12.7,
+   "surface_temp": 91.7,
+   "angle_optimal": 42
+  },
+  {
+   "t": 1769581140000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.57,
+   "sun_azimuth": 113.8,
+   "is_sunlit": true,
+   "dust_level": 12.4,
+   "surface_temp": 96.2,
+   "angle_optimal": 42
+  },
+  {
+   "t": 1769581200000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.78,
+   "sun_azimuth": 117.7,
+   "is_sunlit": true,
+   "dust_level": 12,
+   "surface_temp": 100.1,
+   "angle_optimal": 41.5
+  },
+  {
+   "t": 1769581260000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.9,
+   "sun_azimuth": 121.6,
+   "is_sunlit": true,
+   "dust_level": 11.7,
+   "surface_temp": 103.2,
+   "angle_optimal": 41.5
+  },
+  {
+   "t": 1769581320000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.97,
+   "sun_azimuth": 125.4,
+   "is_sunlit": true,
+   "dust_level": 11.2,
+   "surface_temp": 105.2,
+   "angle_optimal": 41
+  },
+  {
+   "t": 1769581380000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 56,
+   "sun_azimuth": 129.3,
+   "is_sunlit": true,
+   "dust_level": 10.8,
+   "surface_temp": 106,
+   "angle_optimal": 41
+  },
+  {
+   "t": 1769581440000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.99,
+   "sun_azimuth": 133.2,
+   "is_sunlit": true,
+   "dust_level": 10.4,
+   "surface_temp": 105.6,
+   "angle_optimal": 40.5
+  },
+  {
+   "t": 1769581500000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.93,
+   "sun_azimuth": 137.1,
+   "is_sunlit": true,
+   "dust_level": 10,
+   "surface_temp": 104,
+   "angle_optimal": 40
+  },
+  {
+   "t": 1769581560000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.83,
+   "sun_azimuth": 141,
+   "is_sunlit": true,
+   "dust_level": 9.6,
+   "surface_temp": 101.3,
+   "angle_optimal": 40
+  },
+  {
+   "t": 1769581620000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.65,
+   "sun_azimuth": 144.9,
+   "is_sunlit": true,
+   "dust_level": 9.2,
+   "surface_temp": 97.7,
+   "angle_optimal": 39.5
+  },
+  {
+   "t": 1769581680000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.38,
+   "sun_azimuth": 148.7,
+   "is_sunlit": true,
+   "dust_level": 8.9,
+   "surface_temp": 93.4,
+   "angle_optimal": 39.5
+  },
+  {
+   "t": 1769581740000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 54.97,
+   "sun_azimuth": 152.6,
+   "is_sunlit": true,
+   "dust_level": 8.6,
+   "surface_temp": 88.6,
+   "angle_optimal": 39.5
+  },
+  {
+   "t": 1769581800000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 54.39,
+   "sun_azimuth": 156.5,
+   "is_sunlit": true,
+   "dust_level": 8.4,
+   "surface_temp": 83.5,
+   "angle_optimal": 40
+  },
+  {
+   "t": 1769581860000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 53.6,
+   "sun_azimuth": 160.4,
+   "is_sunlit": true,
+   "dust_level": 8.2,
+   "surface_temp": 78.5,
+   "angle_optimal": 40.5
+  },
+  {
+   "t": 1769581920000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 52.57,
+   "sun_azimuth": 164.3,
+   "is_sunlit": true,
+   "dust_level": 8.1,
+   "surface_temp": 73.6,
+   "angle_optimal": 41.5
+  },
+  {
+   "t": 1769581980000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 51.24,
+   "sun_azimuth": 168.2,
+   "is_sunlit": true,
+   "dust_level": 8,
+   "surface_temp": 68.9,
+   "angle_optimal": 42.5
+  },
+  {
+   "t": 1769582040000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 49.58,
+   "sun_azimuth": 172,
+   "is_sunlit": true,
+   "dust_level": 8.1,
+   "surface_temp": 64.5,
+   "angle_optimal": 44.5
+  },
+  {
+   "t": 1769582100000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 47.57,
+   "sun_azimuth": 175.9,
+   "is_sunlit": true,
+   "dust_level": 8.2,
+   "surface_temp": 60.2,
+   "angle_optimal": 46.5
+  },
+  {
+   "t": 1769582160000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 45.18,
+   "sun_azimuth": 179.8,
+   "is_sunlit": true,
+   "dust_level": 8.3,
+   "surface_temp": 56,
+   "angle_optimal": 49
+  },
+  {
+   "t": 1769582220000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 42.39,
+   "sun_azimuth": 183.7,
+   "is_sunlit": true,
+   "dust_level": 8.6,
+   "surface_temp": 51.7,
+   "angle_optimal": 52
+  },
+  {
+   "t": 1769582280000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 39.2,
+   "sun_azimuth": 187.6,
+   "is_sunlit": true,
+   "dust_level": 8.9,
+   "surface_temp": 47.1,
+   "angle_optimal": 55.5
+  },
+  {
+   "t": 1769582340000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 35.61,
+   "sun_azimuth": 191.5,
+   "is_sunlit": true,
+   "dust_level": 9.3,
+   "surface_temp": 42,
+   "angle_optimal": 59.5
+  },
+  {
+   "t": 1769582400000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 31.64,
+   "sun_azimuth": 195.3,
+   "is_sunlit": true,
+   "dust_level": 9.7,
+   "surface_temp": 36.2,
+   "angle_optimal": 64
+  },
+  {
+   "t": 1769582460000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 27.31,
+   "sun_azimuth": 199.2,
+   "is_sunlit": true,
+   "dust_level": 10.2,
+   "surface_temp": 29.7,
+   "angle_optimal": 68.5
+  },
+  {
+   "t": 1769582520000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 22.66,
+   "sun_azimuth": 203.1,
+   "is_sunlit": true,
+   "dust_level": 10.8,
+   "surface_temp": 22.3,
+   "angle_optimal": 73.5
+  },
+  {
+   "t": 1769582580000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 17.74,
+   "sun_azimuth": 207,
+   "is_sunlit": true,
+   "dust_level": 11.3,
+   "surface_temp": 14,
+   "angle_optimal": 79
+  },
+  {
+   "t": 1769582640000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 12.59,
+   "sun_azimuth": 210.9,
+   "is_sunlit": true,
+   "dust_level": 12,
+   "surface_temp": 5,
+   "angle_optimal": 84.5
+  },
+  {
+   "t": 1769582700000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 7.29,
+   "sun_azimuth": 214.8,
+   "is_sunlit": true,
+   "dust_level": 12.6,
+   "surface_temp": -4.6,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769582760000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 1.9,
+   "sun_azimuth": 218.6,
+   "is_sunlit": true,
+   "dust_level": 13.3,
+   "surface_temp": -14.5,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769582820000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -3.52,
+   "sun_azimuth": 222.5,
+   "is_sunlit": true,
+   "dust_level": 13.9,
+   "surface_temp": -19.3,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769582880000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -8.89,
+   "sun_azimuth": 226.4,
+   "is_sunlit": true,
+   "dust_level": 14.6,
+   "surface_temp": -21.2,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769582940000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -14.16,
+   "sun_azimuth": 230.3,
+   "is_sunlit": true,
+   "dust_level": 15.2,
+   "surface_temp": -22.7,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769583000000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -19.24,
+   "sun_azimuth": 234.2,
+   "is_sunlit": true,
+   "dust_level": 15.8,
+   "surface_temp": -23.7,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769583060000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -24.08,
+   "sun_azimuth": 238.1,
+   "is_sunlit": true,
+   "dust_level": 16.4,
+   "surface_temp": -24,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769583120000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -28.64,
+   "sun_azimuth": 241.9,
+   "is_sunlit": true,
+   "dust_level": 16.9,
+   "surface_temp": -23.6,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769583180000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -32.87,
+   "sun_azimuth": 245.8,
+   "is_sunlit": true,
+   "dust_level": 17.4,
+   "surface_temp": -22.7,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769583240000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -36.73,
+   "sun_azimuth": 249.7,
+   "is_sunlit": true,
+   "dust_level": 17.9,
+   "surface_temp": -21.1,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769583300000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -40.2,
+   "sun_azimuth": 253.6,
+   "is_sunlit": true,
+   "dust_level": 18.2,
+   "surface_temp": -19.3,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769583360000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -43.27,
+   "sun_azimuth": 257.5,
+   "is_sunlit": true,
+   "dust_level": 18.5,
+   "surface_temp": -17.2,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769583420000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -45.94,
+   "sun_azimuth": 261.4,
+   "is_sunlit": true,
+   "dust_level": 18.7,
+   "surface_temp": -15.3,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769583480000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -48.21,
+   "sun_azimuth": 265.2,
+   "is_sunlit": false,
+   "dust_level": 18.9,
+   "surface_temp": -38.2,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769583540000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -50.12,
+   "sun_azimuth": 269.1,
+   "is_sunlit": false,
+   "dust_level": 19,
+   "surface_temp": -38.7,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769583600000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -51.67,
+   "sun_azimuth": 273,
+   "is_sunlit": false,
+   "dust_level": 19,
+   "surface_temp": -39.1,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769583660000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -52.91,
+   "sun_azimuth": 276.9,
+   "is_sunlit": false,
+   "dust_level": 18.9,
+   "surface_temp": -39.5,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769583720000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -53.86,
+   "sun_azimuth": 280.8,
+   "is_sunlit": false,
+   "dust_level": 18.8,
+   "surface_temp": -40,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769583780000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -54.59,
+   "sun_azimuth": 284.7,
+   "is_sunlit": false,
+   "dust_level": 18.6,
+   "surface_temp": -40.4,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769583840000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.11,
+   "sun_azimuth": 288.5,
+   "is_sunlit": false,
+   "dust_level": 18.3,
+   "surface_temp": -40.8,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769583900000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.47,
+   "sun_azimuth": 292.4,
+   "is_sunlit": false,
+   "dust_level": 18,
+   "surface_temp": -41.2,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769583960000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.72,
+   "sun_azimuth": 296.3,
+   "is_sunlit": false,
+   "dust_level": 17.7,
+   "surface_temp": -41.7,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584020000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.87,
+   "sun_azimuth": 300.2,
+   "is_sunlit": false,
+   "dust_level": 17.3,
+   "surface_temp": -42.1,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584080000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.96,
+   "sun_azimuth": 304.1,
+   "is_sunlit": false,
+   "dust_level": 16.9,
+   "surface_temp": -42.5,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584140000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.99,
+   "sun_azimuth": 308,
+   "is_sunlit": false,
+   "dust_level": 16.5,
+   "surface_temp": -43,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584200000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -56,
+   "sun_azimuth": 311.8,
+   "is_sunlit": false,
+   "dust_level": 16,
+   "surface_temp": -43.4,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584260000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.96,
+   "sun_azimuth": 315.7,
+   "is_sunlit": false,
+   "dust_level": 15.6,
+   "surface_temp": -43.8,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584320000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.87,
+   "sun_azimuth": 319.6,
+   "is_sunlit": false,
+   "dust_level": 15.2,
+   "surface_temp": -44.3,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584380000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.72,
+   "sun_azimuth": 323.5,
+   "is_sunlit": false,
+   "dust_level": 14.8,
+   "surface_temp": -44.7,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584440000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.49,
+   "sun_azimuth": 327.4,
+   "is_sunlit": false,
+   "dust_level": 14.5,
+   "surface_temp": -45.1,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584500000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.13,
+   "sun_azimuth": 331.3,
+   "is_sunlit": false,
+   "dust_level": 14.2,
+   "surface_temp": -45.6,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584560000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -54.62,
+   "sun_azimuth": 335.1,
+   "is_sunlit": false,
+   "dust_level": 13.9,
+   "surface_temp": -46,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584620000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -53.91,
+   "sun_azimuth": 339,
+   "is_sunlit": false,
+   "dust_level": 13.7,
+   "surface_temp": -46.4,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584680000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -52.96,
+   "sun_azimuth": 342.9,
+   "is_sunlit": false,
+   "dust_level": 13.6,
+   "surface_temp": -46.9,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584740000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -51.74,
+   "sun_azimuth": 346.8,
+   "is_sunlit": false,
+   "dust_level": 13.5,
+   "surface_temp": -47.3,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584800000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -50.2,
+   "sun_azimuth": 350.7,
+   "is_sunlit": false,
+   "dust_level": 13.5,
+   "surface_temp": -47.7,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584860000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -48.32,
+   "sun_azimuth": 354.6,
+   "is_sunlit": false,
+   "dust_level": 13.6,
+   "surface_temp": -48.2,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584920000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -46.06,
+   "sun_azimuth": 358.4,
+   "is_sunlit": false,
+   "dust_level": 13.8,
+   "surface_temp": -48.6,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769584980000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -43.41,
+   "sun_azimuth": 2.3,
+   "is_sunlit": false,
+   "dust_level": 14,
+   "surface_temp": -49,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769585040000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -40.36,
+   "sun_azimuth": 6.2,
+   "is_sunlit": false,
+   "dust_level": 14.3,
+   "surface_temp": -49.4,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769585100000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -36.91,
+   "sun_azimuth": 10.1,
+   "is_sunlit": false,
+   "dust_level": 14.6,
+   "surface_temp": -49.9,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769585160000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -33.07,
+   "sun_azimuth": 14,
+   "is_sunlit": false,
+   "dust_level": 15.1,
+   "surface_temp": -50.3,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769585220000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -28.86,
+   "sun_azimuth": 17.9,
+   "is_sunlit": false,
+   "dust_level": 15.5,
+   "surface_temp": -50.7,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769585280000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -24.32,
+   "sun_azimuth": 21.7,
+   "is_sunlit": false,
+   "dust_level": 16.1,
+   "surface_temp": -51.2,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769585340000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -19.49,
+   "sun_azimuth": 25.6,
+   "is_sunlit": false,
+   "dust_level": 16.6,
+   "surface_temp": -51.6,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769585400000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -14.41,
+   "sun_azimuth": 29.5,
+   "is_sunlit": false,
+   "dust_level": 17.2,
+   "surface_temp": -52,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769585460000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -9.16,
+   "sun_azimuth": 33.4,
+   "is_sunlit": true,
+   "dust_level": 17.9,
+   "surface_temp": -21.3,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769585520000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -3.79,
+   "sun_azimuth": 37.3,
+   "is_sunlit": true,
+   "dust_level": 18.5,
+   "surface_temp": -19.4,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769585580000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 1.63,
+   "sun_azimuth": 41.2,
+   "is_sunlit": true,
+   "dust_level": 19.2,
+   "surface_temp": -15,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769585640000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 7.02,
+   "sun_azimuth": 45,
+   "is_sunlit": true,
+   "dust_level": 19.9,
+   "surface_temp": -5.1,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769585700000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 12.33,
+   "sun_azimuth": 48.9,
+   "is_sunlit": true,
+   "dust_level": 20.5,
+   "surface_temp": 4.5,
+   "angle_optimal": 89.5
+  },
+  {
+   "t": 1769585760000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 17.48,
+   "sun_azimuth": 52.8,
+   "is_sunlit": true,
+   "dust_level": 21.1,
+   "surface_temp": 13.6,
+   "angle_optimal": 85
+  },
+  {
+   "t": 1769585820000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 22.42,
+   "sun_azimuth": 56.7,
+   "is_sunlit": true,
+   "dust_level": 21.7,
+   "surface_temp": 21.9,
+   "angle_optimal": 81
+  },
+  {
+   "t": 1769585880000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 27.08,
+   "sun_azimuth": 60.6,
+   "is_sunlit": true,
+   "dust_level": 22.3,
+   "surface_temp": 29.3,
+   "angle_optimal": 76.5
+  },
+  {
+   "t": 1769585940000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 31.43,
+   "sun_azimuth": 64.5,
+   "is_sunlit": true,
+   "dust_level": 22.8,
+   "surface_temp": 35.9,
+   "angle_optimal": 73
+  },
+  {
+   "t": 1769586000000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 35.42,
+   "sun_azimuth": 68.3,
+   "is_sunlit": true,
+   "dust_level": 23.2,
+   "surface_temp": 41.7,
+   "angle_optimal": 69
+  },
+  {
+   "t": 1769586060000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 39.03,
+   "sun_azimuth": 72.2,
+   "is_sunlit": true,
+   "dust_level": 23.6,
+   "surface_temp": 46.9,
+   "angle_optimal": 66
+  },
+  {
+   "t": 1769586120000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 42.24,
+   "sun_azimuth": 76.1,
+   "is_sunlit": true,
+   "dust_level": 23.9,
+   "surface_temp": 51.5,
+   "angle_optimal": 63
+  },
+  {
+   "t": 1769586180000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 45.05,
+   "sun_azimuth": 80,
+   "is_sunlit": true,
+   "dust_level": 24.2,
+   "surface_temp": 55.8,
+   "angle_optimal": 60
+  },
+  {
+   "t": 1769586240000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 47.46,
+   "sun_azimuth": 83.9,
+   "is_sunlit": true,
+   "dust_level": 24.3,
+   "surface_temp": 60,
+   "angle_optimal": 58
+  },
+  {
+   "t": 1769586300000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 49.49,
+   "sun_azimuth": 87.8,
+   "is_sunlit": true,
+   "dust_level": 24.4,
+   "surface_temp": 64.2,
+   "angle_optimal": 56
+  },
+  {
+   "t": 1769586360000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 51.16,
+   "sun_azimuth": 91.7,
+   "is_sunlit": true,
+   "dust_level": 24.5,
+   "surface_temp": 68.7,
+   "angle_optimal": 54
+  },
+  {
+   "t": 1769586420000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 52.51,
+   "sun_azimuth": 95.5,
+   "is_sunlit": true,
+   "dust_level": 24.4,
+   "surface_temp": 73.3,
+   "angle_optimal": 53
+  },
+  {
+   "t": 1769586480000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 53.56,
+   "sun_azimuth": 99.4,
+   "is_sunlit": true,
+   "dust_level": 24.3,
+   "surface_temp": 78.2,
+   "angle_optimal": 52
+  },
+  {
+   "t": 1769586540000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 54.36,
+   "sun_azimuth": 103.3,
+   "is_sunlit": true,
+   "dust_level": 24.1,
+   "surface_temp": 83.3,
+   "angle_optimal": 51.5
+  },
+  {
+   "t": 1769586600000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 54.94,
+   "sun_azimuth": 107.2,
+   "is_sunlit": true,
+   "dust_level": 23.9,
+   "surface_temp": 88.3,
+   "angle_optimal": 51
+  },
+  {
+   "t": 1769586660000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.36,
+   "sun_azimuth": 111.1,
+   "is_sunlit": true,
+   "dust_level": 23.6,
+   "surface_temp": 93.1,
+   "angle_optimal": 51
+  },
+  {
+   "t": 1769586720000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.64,
+   "sun_azimuth": 115,
+   "is_sunlit": true,
+   "dust_level": 23.3,
+   "surface_temp": 97.5,
+   "angle_optimal": 50.5
+  },
+  {
+   "t": 1769586780000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.82,
+   "sun_azimuth": 118.8,
+   "is_sunlit": true,
+   "dust_level": 22.9,
+   "surface_temp": 101.1,
+   "angle_optimal": 50.5
+  },
+  {
+   "t": 1769586840000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.93,
+   "sun_azimuth": 122.7,
+   "is_sunlit": true,
+   "dust_level": 22.5,
+   "surface_temp": 103.9,
+   "angle_optimal": 50.5
+  },
+  {
+   "t": 1769586900000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.99,
+   "sun_azimuth": 126.6,
+   "is_sunlit": true,
+   "dust_level": 22.1,
+   "surface_temp": 105.5,
+   "angle_optimal": 50.5
+  },
+  {
+   "t": 1769586960000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 56,
+   "sun_azimuth": 130.5,
+   "is_sunlit": true,
+   "dust_level": 21.7,
+   "surface_temp": 106,
+   "angle_optimal": 50
+  },
+  {
+   "t": 1769587020000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.98,
+   "sun_azimuth": 134.4,
+   "is_sunlit": true,
+   "dust_level": 21.3,
+   "surface_temp": 105.2,
+   "angle_optimal": 49.5
+  },
+  {
+   "t": 1769587080000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.91,
+   "sun_azimuth": 138.3,
+   "is_sunlit": true,
+   "dust_level": 20.9,
+   "surface_temp": 103.3,
+   "angle_optimal": 49
+  },
+  {
+   "t": 1769587140000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.79,
+   "sun_azimuth": 142.1,
+   "is_sunlit": true,
+   "dust_level": 20.5,
+   "surface_temp": 100.3,
+   "angle_optimal": 48.5
+  },
+  {
+   "t": 1769587200000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.58,
+   "sun_azimuth": 146,
+   "is_sunlit": true,
+   "dust_level": 20.1,
+   "surface_temp": 96.4,
+   "angle_optimal": 48
+  },
+  {
+   "t": 1769587260000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 55.27,
+   "sun_azimuth": 149.9,
+   "is_sunlit": true,
+   "dust_level": 19.8,
+   "surface_temp": 92,
+   "angle_optimal": 47.5
+  },
+  {
+   "t": 1769587320000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 54.82,
+   "sun_azimuth": 153.8,
+   "is_sunlit": true,
+   "dust_level": 19.5,
+   "surface_temp": 87.1,
+   "angle_optimal": 47.5
+  },
+  {
+   "t": 1769587380000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 54.18,
+   "sun_azimuth": 157.7,
+   "is_sunlit": true,
+   "dust_level": 19.3,
+   "surface_temp": 82,
+   "angle_optimal": 47.5
+  },
+  {
+   "t": 1769587440000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 53.32,
+   "sun_azimuth": 161.6,
+   "is_sunlit": true,
+   "dust_level": 19.1,
+   "surface_temp": 77,
+   "angle_optimal": 48
+  },
+  {
+   "t": 1769587500000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 52.2,
+   "sun_azimuth": 165.4,
+   "is_sunlit": true,
+   "dust_level": 19.1,
+   "surface_temp": 72.1,
+   "angle_optimal": 49
+  },
+  {
+   "t": 1769587560000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 50.78,
+   "sun_azimuth": 169.3,
+   "is_sunlit": true,
+   "dust_level": 19,
+   "surface_temp": 67.5,
+   "angle_optimal": 50.5
+  },
+  {
+   "t": 1769587620000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 49.02,
+   "sun_azimuth": 173.2,
+   "is_sunlit": true,
+   "dust_level": 19.1,
+   "surface_temp": 63.2,
+   "angle_optimal": 52.5
+  },
+  {
+   "t": 1769587680000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 46.89,
+   "sun_azimuth": 177.1,
+   "is_sunlit": true,
+   "dust_level": 19.2,
+   "surface_temp": 58.9,
+   "angle_optimal": 54.5
+  },
+  {
+   "t": 1769587740000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 44.38,
+   "sun_azimuth": 181,
+   "is_sunlit": true,
+   "dust_level": 19.4,
+   "surface_temp": 54.7,
+   "angle_optimal": 57.5
+  },
+  {
+   "t": 1769587800000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 41.47,
+   "sun_azimuth": 184.9,
+   "is_sunlit": true,
+   "dust_level": 19.7,
+   "surface_temp": 50.4,
+   "angle_optimal": 60.5
+  },
+  {
+   "t": 1769587860000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 38.16,
+   "sun_azimuth": 188.7,
+   "is_sunlit": true,
+   "dust_level": 20,
+   "surface_temp": 45.6,
+   "angle_optimal": 64
+  },
+  {
+   "t": 1769587920000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 34.46,
+   "sun_azimuth": 192.6,
+   "is_sunlit": true,
+   "dust_level": 20.4,
+   "surface_temp": 40.4,
+   "angle_optimal": 68
+  },
+  {
+   "t": 1769587980000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 30.37,
+   "sun_azimuth": 196.5,
+   "is_sunlit": true,
+   "dust_level": 20.9,
+   "surface_temp": 34.4,
+   "angle_optimal": 72.5
+  },
+  {
+   "t": 1769588040000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 25.94,
+   "sun_azimuth": 200.4,
+   "is_sunlit": true,
+   "dust_level": 21.4,
+   "surface_temp": 27.5,
+   "angle_optimal": 77
+  },
+  {
+   "t": 1769588100000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 21.21,
+   "sun_azimuth": 204.3,
+   "is_sunlit": true,
+   "dust_level": 21.9,
+   "surface_temp": 19.9,
+   "angle_optimal": 82
+  },
+  {
+   "t": 1769588160000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 16.21,
+   "sun_azimuth": 208.2,
+   "is_sunlit": true,
+   "dust_level": 22.5,
+   "surface_temp": 11.4,
+   "angle_optimal": 87
+  },
+  {
+   "t": 1769588220000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 11.02,
+   "sun_azimuth": 212,
+   "is_sunlit": true,
+   "dust_level": 23.2,
+   "surface_temp": 2.2,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769588280000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 5.68,
+   "sun_azimuth": 215.9,
+   "is_sunlit": true,
+   "dust_level": 23.8,
+   "surface_temp": -7.5,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769588340000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": 0.27,
+   "sun_azimuth": 219.8,
+   "is_sunlit": true,
+   "dust_level": 24.5,
+   "surface_temp": -17.5,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769588400000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -5.14,
+   "sun_azimuth": 223.7,
+   "is_sunlit": true,
+   "dust_level": 25.1,
+   "surface_temp": -19.9,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769588460000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -10.49,
+   "sun_azimuth": 227.6,
+   "is_sunlit": true,
+   "dust_level": 25.8,
+   "surface_temp": -21.7,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769588520000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -15.7,
+   "sun_azimuth": 231.5,
+   "is_sunlit": true,
+   "dust_level": 26.4,
+   "surface_temp": -23,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769588580000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -20.72,
+   "sun_azimuth": 235.3,
+   "is_sunlit": true,
+   "dust_level": 27,
+   "surface_temp": -23.8,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769588640000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -25.48,
+   "sun_azimuth": 239.2,
+   "is_sunlit": true,
+   "dust_level": 27.6,
+   "surface_temp": -24,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769588700000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -29.95,
+   "sun_azimuth": 243.1,
+   "is_sunlit": true,
+   "dust_level": 28.1,
+   "surface_temp": -23.4,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769588760000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -34.06,
+   "sun_azimuth": 247,
+   "is_sunlit": true,
+   "dust_level": 28.6,
+   "surface_temp": -22.2,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769588820000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -37.81,
+   "sun_azimuth": 250.9,
+   "is_sunlit": true,
+   "dust_level": 29,
+   "surface_temp": -20.6,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769588880000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -41.16,
+   "sun_azimuth": 254.8,
+   "is_sunlit": true,
+   "dust_level": 29.3,
+   "surface_temp": -18.6,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769588940000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -44.11,
+   "sun_azimuth": 258.6,
+   "is_sunlit": true,
+   "dust_level": 29.6,
+   "surface_temp": -16.6,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769589000000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -46.66,
+   "sun_azimuth": 262.5,
+   "is_sunlit": true,
+   "dust_level": 29.8,
+   "surface_temp": -14.8,
+   "angle_optimal": 90
+  },
+  {
+   "t": 1769589060000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -48.82,
+   "sun_azimuth": 266.4,
+   "is_sunlit": false,
+   "dust_level": 29.9,
+   "surface_temp": -38.4,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769589120000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -50.62,
+   "sun_azimuth": 270.3,
+   "is_sunlit": false,
+   "dust_level": 30,
+   "surface_temp": -38.8,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769589180000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -52.07,
+   "sun_azimuth": 274.2,
+   "is_sunlit": false,
+   "dust_level": 30,
+   "surface_temp": -39.2,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769589240000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -53.22,
+   "sun_azimuth": 278.1,
+   "is_sunlit": false,
+   "dust_level": 29.9,
+   "surface_temp": -39.7,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769589300000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -54.1,
+   "sun_azimuth": 281.9,
+   "is_sunlit": false,
+   "dust_level": 29.7,
+   "surface_temp": -40.1,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769589360000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -54.76,
+   "sun_azimuth": 285.8,
+   "is_sunlit": false,
+   "dust_level": 29.5,
+   "surface_temp": -40.5,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769589420000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.23,
+   "sun_azimuth": 289.7,
+   "is_sunlit": false,
+   "dust_level": 29.2,
+   "surface_temp": -40.9,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769589480000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.56,
+   "sun_azimuth": 293.6,
+   "is_sunlit": false,
+   "dust_level": 28.9,
+   "surface_temp": -41.4,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769589540000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.77,
+   "sun_azimuth": 297.5,
+   "is_sunlit": false,
+   "dust_level": 28.6,
+   "surface_temp": -41.8,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769589600000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.9,
+   "sun_azimuth": 301.4,
+   "is_sunlit": false,
+   "dust_level": 28.2,
+   "surface_temp": -42.2,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769589660000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.97,
+   "sun_azimuth": 305.2,
+   "is_sunlit": false,
+   "dust_level": 27.8,
+   "surface_temp": -42.7,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769589720000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -56,
+   "sun_azimuth": 309.1,
+   "is_sunlit": false,
+   "dust_level": 27.3,
+   "surface_temp": -43.1,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769589780000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.99,
+   "sun_azimuth": 313,
+   "is_sunlit": false,
+   "dust_level": 26.9,
+   "surface_temp": -43.5,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769589840000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.94,
+   "sun_azimuth": 316.9,
+   "is_sunlit": false,
+   "dust_level": 26.5,
+   "surface_temp": -44,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769589900000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.84,
+   "sun_azimuth": 320.8,
+   "is_sunlit": false,
+   "dust_level": 26.1,
+   "surface_temp": -44.4,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769589960000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.66,
+   "sun_azimuth": 324.7,
+   "is_sunlit": false,
+   "dust_level": 25.7,
+   "surface_temp": -44.8,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590020000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -55.39,
+   "sun_azimuth": 328.5,
+   "is_sunlit": false,
+   "dust_level": 25.4,
+   "surface_temp": -45.3,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590080000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -54.99,
+   "sun_azimuth": 332.4,
+   "is_sunlit": false,
+   "dust_level": 25.1,
+   "surface_temp": -45.7,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590140000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -54.43,
+   "sun_azimuth": 336.3,
+   "is_sunlit": false,
+   "dust_level": 24.9,
+   "surface_temp": -46.1,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590200000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -53.65,
+   "sun_azimuth": 340.2,
+   "is_sunlit": false,
+   "dust_level": 24.7,
+   "surface_temp": -46.6,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590260000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -52.62,
+   "sun_azimuth": 344.1,
+   "is_sunlit": false,
+   "dust_level": 24.6,
+   "surface_temp": -47,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590320000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -51.31,
+   "sun_azimuth": 348,
+   "is_sunlit": false,
+   "dust_level": 24.5,
+   "surface_temp": -47.4,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590380000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -49.67,
+   "sun_azimuth": 351.8,
+   "is_sunlit": false,
+   "dust_level": 24.6,
+   "surface_temp": -47.8,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590440000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -47.68,
+   "sun_azimuth": 355.7,
+   "is_sunlit": false,
+   "dust_level": 24.6,
+   "surface_temp": -48.3,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590500000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -45.31,
+   "sun_azimuth": 359.6,
+   "is_sunlit": false,
+   "dust_level": 24.8,
+   "surface_temp": -48.7,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590560000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -42.54,
+   "sun_azimuth": 3.5,
+   "is_sunlit": false,
+   "dust_level": 25.1,
+   "surface_temp": -49.1,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590620000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -39.37,
+   "sun_azimuth": 7.4,
+   "is_sunlit": false,
+   "dust_level": 25.4,
+   "surface_temp": -49.6,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590680000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -35.8,
+   "sun_azimuth": 11.3,
+   "is_sunlit": false,
+   "dust_level": 25.7,
+   "surface_temp": -50,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590740000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -31.84,
+   "sun_azimuth": 15.1,
+   "is_sunlit": false,
+   "dust_level": 26.2,
+   "surface_temp": -50.4,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590800000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -27.53,
+   "sun_azimuth": 19,
+   "is_sunlit": false,
+   "dust_level": 26.7,
+   "surface_temp": -50.9,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590860000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -22.9,
+   "sun_azimuth": 22.9,
+   "is_sunlit": false,
+   "dust_level": 27.2,
+   "surface_temp": -51.3,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590920000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -17.99,
+   "sun_azimuth": 26.8,
+   "is_sunlit": false,
+   "dust_level": 27.8,
+   "surface_temp": -51.7,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769590980000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -12.85,
+   "sun_azimuth": 30.7,
+   "is_sunlit": false,
+   "dust_level": 28.4,
+   "surface_temp": -52.2,
+   "angle_optimal": 0
+  },
+  {
+   "t": 1769591040000,
+   "satellite": "ISS (exemple)",
+   "sun_elevation": -7.56,
+   "sun_azimuth": 34.6,
+   "is_sunlit": true,
+   "dust_level": 29.1,
+   "surface_temp": -20.7,
+   "angle_optimal": 90
+  }
+ ]
+}

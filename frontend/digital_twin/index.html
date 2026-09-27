@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SolarNav AI — Jumeau Numérique 3D</title>
+<style>
+  :root{
+    --bg:#03050b; --panel:rgba(8,12,22,.88); --hair:rgba(56,189,248,.16);
+    --cyan:#38bdf8; --amber:#fbbf24; --text:#e6edf5; --dim:#7d8aa0; --mono:'SF Mono',Consolas,'Cascadia Code',monospace;
+    box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:var(--bg);overflow:hidden;font-family:-apple-system,'Segoe UI',Inter,sans-serif;color:var(--text)}
+  #scene{position:fixed;inset:0}
+  #scene canvas{display:block}
+
+  #topstrip{
+    position:absolute; top:calc(16px + env(safe-area-inset-top,0px)); left:50%; transform:translateX(-50%);
+    display:flex; gap:22px; align-items:center; padding:10px 22px; background:var(--panel);
+    border:1px solid var(--hair); border-radius:10px; backdrop-filter:blur(14px);
+    box-shadow:0 14px 34px rgba(0,0,0,.45); font-size:.8rem; z-index:5;
+  }
+  #topstrip .brand{font-weight:700;letter-spacing:.4px;color:var(--cyan);font-size:.85rem;white-space:nowrap}
+  #topstrip .divider{width:1px;height:18px;background:var(--hair)}
+  #topstrip .stat{display:flex;flex-direction:column;gap:1px;align-items:center;min-width:52px}
+  #topstrip .stat b{font-family:var(--mono);font-size:.95rem;color:var(--text);white-space:nowrap}
+  @media (max-width:1100px){ #topstrip .stat.opt{display:none} }
+  #topstrip .stat span{color:var(--dim);font-size:.65rem}
+  #topstrip .stat.power b{color:var(--amber)}
+
+  #dock{
+    position:absolute; top:calc(16px + env(safe-area-inset-top,0px)); left:16px; width:296px; max-height:calc(100vh - 32px);
+    overflow-y:auto; background:var(--panel); border:1px solid var(--hair); border-radius:12px;
+    backdrop-filter:blur(14px); box-shadow:0 20px 44px rgba(0,0,0,.5); z-index:5; scrollbar-width:thin;
+  }
+  #dock::-webkit-scrollbar{width:6px} #dock::-webkit-scrollbar-thumb{background:var(--hair);border-radius:3px}
+  .sec{border-bottom:1px solid var(--hair)}
+  .sec:last-child{border-bottom:none}
+  .sec h2{margin:0;padding:12px 16px;font-size:.82rem;font-weight:600;color:var(--text);cursor:pointer;
+    display:flex;justify-content:space-between;align-items:center;user-select:none}
+  .sec h2 .car{color:var(--cyan);font-size:.7rem;transition:transform .2s}
+  .sec.closed h2 .car{transform:rotate(-90deg)}
+  .sec .body{padding:2px 16px 14px;display:flex;flex-direction:column;gap:12px}
+  .sec.closed .body{display:none}
+
+  .row{display:flex;flex-direction:column;gap:5px}
+  .row .lab{display:flex;justify-content:space-between;font-size:.72rem;color:var(--dim)}
+  .row .lab b{color:var(--text);font-family:var(--mono);font-weight:500}
+  input[type=range]{-webkit-appearance:none;height:4px;border-radius:2px;background:rgba(255,255,255,.12);outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+    background:var(--cyan);border:2px solid #04101c;cursor:pointer;box-shadow:0 0 8px rgba(56,189,248,.7)}
+  input[type=range]:disabled::-webkit-slider-thumb{background:var(--dim);box-shadow:none}
+  .btnrow{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{flex:1;min-width:64px;padding:7px 4px;text-align:center;font-size:.7rem;background:rgba(255,255,255,.04);
+    border:1px solid var(--hair);border-radius:7px;color:var(--dim);cursor:pointer;transition:.15s}
+  .chip:hover{border-color:var(--cyan);color:var(--text)}
+  .chip.active{background:rgba(56,189,248,.16);border-color:var(--cyan);color:var(--cyan)}
+
+  .toggle{display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:var(--dim)}
+  .sw{position:relative;width:34px;height:19px;background:rgba(255,255,255,.14);border-radius:10px;cursor:pointer;flex:none}
+  .sw::after{content:'';position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#fff;transition:.18s}
+  .sw.on{background:var(--cyan)} .sw.on::after{left:17px}
+
+  #popup{
+    position:absolute; transform:translate(-50%,-116%); width:230px; background:var(--panel);
+    border:1px solid rgba(251,191,36,.4); border-radius:10px; padding:12px 14px; backdrop-filter:blur(14px);
+    box-shadow:0 16px 34px rgba(0,0,0,.55); z-index:6; display:none;
+  }
+  #popup::after{content:'';position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);
+    width:12px;height:12px;background:var(--panel);border-right:1px solid rgba(251,191,36,.4);
+    border-bottom:1px solid rgba(251,191,36,.4);rotate:45deg}
+  #popup h3{margin:0 0 8px;font-size:.8rem;color:var(--amber);display:flex;justify-content:space-between}
+  #popup h3 span{cursor:pointer;color:var(--dim);font-weight:400}
+  #popup .pwr{font-family:var(--mono);font-size:1rem;margin-bottom:8px}
+  #popup .row{gap:4px;margin-bottom:8px}
+  #popup .reset{width:100%;padding:6px;font-size:.68rem;background:rgba(255,255,255,.05);
+    border:1px solid var(--hair);border-radius:6px;color:var(--dim);cursor:pointer}
+  #popup .reset:hover{color:var(--text);border-color:var(--cyan)}
+  #popup .reset + .reset{margin-top:6px}
+  #popup .pstat{display:flex;justify-content:space-between;font-size:.68rem;color:var(--dim);margin:2px 0 4px;
+    padding-top:8px;border-top:1px solid var(--hair)}
+  #popup .pstat b{font-family:var(--mono);font-weight:600}
+  #p-sensors{display:flex;flex-direction:column;gap:3px;margin-bottom:10px}
+  .psens{display:flex;align-items:center;gap:7px;font-size:.7rem;color:var(--dim)}
+  .psens b{margin-left:auto;font-family:var(--mono);font-weight:500;color:var(--text)}
+
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex:none;background:var(--dim)}
+  .scount{display:flex;justify-content:space-between;font-size:.7rem;color:var(--dim)}
+  .scount span{display:flex;align-items:center;gap:5px}
+  .scount b{font-family:var(--mono);color:var(--text)}
+  .srcinfo{font-size:.68rem;color:var(--dim);line-height:1.45}
+  .srcinfo b{color:var(--text);font-weight:500}
+  .srcinfo .err{color:#f87171}
+  .chip.locked{opacity:.4;pointer-events:none}
+  input.txt{width:100%;padding:6px 8px;font-family:var(--mono);font-size:.68rem;color:var(--text);background:rgba(255,255,255,.04);
+    border:1px solid var(--hair);border-radius:6px;outline:none}
+  input.txt:focus{border-color:var(--cyan)}
+  .pdec{font-size:.68rem;color:var(--dim);margin-bottom:8px;line-height:1.45}
+  .pdec b{font-family:var(--mono);font-weight:500;color:var(--text)}
+  .flag{display:inline-block;margin:2px 4px 0 0;padding:1px 5px;border-radius:4px;font-family:var(--mono);font-size:.6rem;
+    color:var(--amber);border:1px solid rgba(251,191,36,.35)}
+  input[type=range].locked{opacity:.35;pointer-events:none}
+  .lbadge{display:inline-block;min-width:44px;margin-right:5px;padding:0 4px;border-radius:4px;text-align:center;
+    font-family:var(--mono);font-size:.58rem;border:1px solid currentColor}
+  .lbadge.live{color:#34d399} .lbadge.cache{color:var(--amber)} .lbadge.fallback{color:#f87171}
+  .swalert{margin-top:6px;padding:6px 8px;border:1px solid rgba(248,113,113,.45);border-radius:7px;color:var(--text)}
+  .swalert .chip{margin-top:6px;color:#f87171;border-color:rgba(248,113,113,.45)}
+  .pdec .reason{color:var(--text);font-style:italic}
+  .gcard{margin-top:6px;padding:7px 8px;border:1px solid rgba(251,191,36,.45);border-radius:8px;font-size:.68rem;color:var(--dim);line-height:1.45}
+  .gcard.stow{border-color:rgba(248,113,113,.55)}
+  .gcard .gh{display:flex;justify-content:space-between;color:var(--text)}
+  .gcard .gh b{font-family:var(--mono)}
+  .gcard .greason{color:var(--text);font-style:italic;margin:3px 0}
+  .gcard .btnrow{margin-top:5px}
+  .gcard .ok{color:#34d399;border-color:rgba(52,211,153,.5)} .gcard .no{color:#f87171;border-color:rgba(248,113,113,.5)}
+  #gate-journal{margin-top:6px;font-size:.66rem;color:var(--dim)}
+  #scenario-banner{display:none;position:absolute;top:calc(84px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:6;
+    max-width:min(640px,calc(100vw - 32px));padding:7px 16px;border-radius:9px;background:rgba(127,29,29,.88);border:1px solid #f87171;
+    color:#fee2e2;font-size:.78rem;text-align:center;box-shadow:0 10px 26px rgba(0,0,0,.4)}
+  #scenario-banner b{color:#fff}
+  #scenario-chips .chip{min-width:88px}
+  #gate-journal summary{cursor:pointer;color:var(--text);font-size:.7rem}
+  #gate-log .gl{padding:3px 0;border-bottom:1px solid var(--hair);line-height:1.4}
+  #gate-log .gl b{font-family:var(--mono);color:var(--text);font-weight:500}
+  #heat-legend{display:none;flex-direction:column;gap:5px}
+  #heat-legend .hl-title{font-size:.7rem;color:var(--dim)}
+  #heat-legend .hl-bar{height:10px;border-radius:3px;border:1px solid var(--hair)}
+  #heat-legend .hl-ticks{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.64rem;color:var(--dim)}
+  #sensor-list{display:flex;flex-direction:column;gap:2px}
+  .sgroup{font-size:.64rem;letter-spacing:.6px;text-transform:uppercase;color:var(--cyan);opacity:.8;margin:8px 0 2px}
+  .sgroup:first-child{margin-top:0}
+  .sensor{display:grid;grid-template-columns:7px 1fr auto 64px;align-items:center;gap:8px;padding:3px 4px;
+    border-radius:5px;font-size:.7rem;color:var(--dim)}
+  .sensor:hover{background:rgba(255,255,255,.04)}
+  .sensor.clickable{cursor:pointer}
+  .sensor .sv{font-family:var(--mono);font-weight:500;color:var(--text);white-space:nowrap}
+  .sensor canvas{width:64px;height:18px;display:block}
+
+  #hint{position:absolute;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);
+    font-size:.7rem;color:var(--dim);background:var(--panel);padding:6px 14px;border:1px solid var(--hair);
+    border-radius:20px;backdrop-filter:blur(10px);z-index:5}
+
+  @media (max-width:640px){ #dock{width:min(300px,88vw)} #topstrip{gap:12px;padding:8px 14px} #topstrip .stat{min-width:40px} #hint{display:none} }
+</style>
+</head>
+<body>
+<div id="scene"></div>
+
+<div id="topstrip">
+  <span class="brand">☀ SolarNav AI</span>
+  <div class="divider"></div>
+  <div class="stat"><b id="s-time">12:00</b><span>Heure</span></div>
+  <div class="stat opt"><b id="s-sky">Jour</b><span>Ciel</span></div>
+  <div class="stat power"><b id="s-power">0.0 kW</b><span>Production</span></div>
+  <div class="stat opt"><b id="s-clouds">4</b><span>Nuages</span></div>
+  <div class="stat"><b id="s-batt">55%</b><span>Batterie</span></div>
+  <div class="stat"><b id="s-data">Simu</b><span>Données</span></div>
+  <div class="stat"><b id="s-dec">Secours</b><span>Pilotage</span></div>
+</div>
+
+<div id="scenario-banner"></div>
+
+<div id="dock">
+  <div class="sec">
+    <h2 data-sec="data">Source des données <span class="car">▾</span></h2>
+    <div class="body">
+      <div class="btnrow">
+        <div class="chip active" data-source="simulation">Simulation</div>
+        <div class="chip" data-source="replay">Replay</div>
+        <div class="chip" data-source="live">Live</div>
+      </div>
+      <div id="src-replay" class="btnrow" style="display:none">
+        <label class="chip">Charger CSV / JSON<input type="file" id="f-replay" accept=".csv,.json,.txt" hidden></label>
+        <div class="chip" id="b-sample">Exemple Ouarzazate</div>
+      </div>
+      <div id="src-live" class="btnrow" style="display:none">
+        <div class="chip active" data-body="earth">Terre · Ouarzazate</div>
+        <div class="chip" data-body="moon">Lune · pôle Sud</div>
+      </div>
+      <div class="srcinfo" id="src-info"></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2 data-sec="env">Environnement <span class="car">▾</span></h2>
+    <div class="body">
+      <div class="row"><div class="lab">Heure du jour <b id="v-time">12.0h</b></div>
+        <input id="i-time" type="range" min="0" max="24" step="0.05" value="12"></div>
+      <div class="toggle"><span>Cycle automatique</span><div class="sw on" id="t-auto"></div></div>
+      <div class="row"><div class="lab">Vitesse du cycle <b id="v-speed">0.05</b></div>
+        <input id="i-speed" type="range" min="0.005" max="0.3" step="0.005" value="0.05"></div>
+      <div class="row"><div class="lab">Intensité solaire <b id="v-sun">3.5</b></div>
+        <input id="i-sun" type="range" min="1" max="6" step="0.1" value="3.5"></div>
+      <div class="btnrow">
+        <div class="chip" data-time="6">Aube</div><div class="chip" data-time="12">Midi</div>
+        <div class="chip" data-time="18.5">Crépuscule</div><div class="chip" data-time="0">Nuit</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2 data-sec="station">Station solaire <span class="car">▾</span></h2>
+    <div class="body">
+      <div class="toggle"><span>Suivi solaire optimal</span><div class="sw on" id="t-track"></div></div>
+      <div class="row"><div class="lab">Inclinaison globale <b id="v-tilt">35°</b></div>
+        <input id="i-tilt" type="range" min="0" max="90" step="1" value="35"></div>
+      <div class="row"><div class="lab">Orientation (azimut) <b id="v-az">0°</b></div>
+        <input id="i-az" type="range" min="-180" max="180" step="1" value="0"></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2 data-sec="decision">Pilotage (décision) <span class="car">▾</span></h2>
+    <div class="body">
+      <div class="btnrow">
+        <div class="chip active" data-dmode="local">Local</div>
+        <div class="chip" data-dmode="api">API IA</div>
+      </div>
+      <div class="srcinfo" id="api-row" style="display:none">Backend : <b>POST /api/v1/agent/decision</b> + <b>GET /api/v1/analysis</b> (URL relative, toutes les 5 s, timeout 5 s)</div>
+      <div class="srcinfo" id="dec-info"></div>
+      <div class="srcinfo" style="margin-top:4px"><b>Autonomie (porte de validation)</b></div>
+      <div class="btnrow">
+        <div class="chip" data-autonomy="manual">Manuel</div>
+        <div class="chip" data-autonomy="semi">Semi-auto</div>
+        <div class="chip active" data-autonomy="full">Full auto</div>
+      </div>
+      <div class="srcinfo" id="gate-info"></div>
+      <div class="btnrow"><div class="chip" id="b-takeover">Reprise manuelle</div></div>
+      <div id="gate-queue"></div>
+      <details id="gate-journal"><summary>Journal des décisions <b id="gate-count">0</b></summary><div id="gate-log"></div></details>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2 data-sec="weather">Météo <span class="car">▾</span></h2>
+    <div class="body">
+      <div class="btnrow">
+        <div class="chip active" data-preset="clear">Ciel clair</div>
+        <div class="chip" data-preset="partly">Partiel</div>
+        <div class="chip" data-preset="overcast">Couvert</div>
+      </div>
+      <div class="row"><div class="lab">Vitesse du vent <b id="v-wind">1.0</b></div>
+        <input id="i-wind" type="range" min="0" max="3" step="0.1" value="1"></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2 data-sec="scenarios">Scénarios météo <span class="car">▾</span></h2>
+    <div class="body">
+      <div class="btnrow" id="scenario-chips">
+        <div class="chip active" data-scenario="normal">Normal</div>
+        <div class="chip" data-scenario="sand">Tempête de sable</div>
+        <div class="chip" data-scenario="rain">Pluie</div>
+        <div class="chip" data-scenario="hail">Orage + grêle</div>
+        <div class="chip" data-scenario="snow">Neige</div>
+        <div class="chip" data-scenario="heat">Canicule</div>
+        <div class="chip" data-scenario="fog">Brouillard</div>
+        <div class="chip" data-scenario="solar">Tempête solaire (Lune)</div>
+      </div>
+      <div class="btnrow"><div class="chip" id="b-demo">▶ Démo automatique (60 s)</div></div>
+      <div class="srcinfo" id="sc-info">Scénarios simulés, prioritaires sur les données (bandeau rouge). Effets progressifs sur les capteurs.</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2 data-sec="view">Vue <span class="car">▾</span></h2>
+    <div class="body">
+      <div class="row"><div class="lab">Coloration des panneaux</div>
+        <div class="btnrow">
+          <div class="chip active" data-view="normal">Normale</div>
+          <div class="chip" data-view="power">Production</div>
+          <div class="chip" data-view="temp">Température</div>
+        </div></div>
+      <div id="heat-legend">
+        <div class="hl-title" id="hl-title">Production</div>
+        <div class="hl-bar" id="hl-bar"></div>
+        <div class="hl-ticks"><span id="hl-min"></span><span id="hl-mid"></span><span id="hl-max"></span></div>
+      </div>
+      <div class="toggle"><span>Grille technique (vue jumeau)</span><div class="sw" id="t-grid"></div></div>
+      <div class="btnrow"><div class="chip" id="b-reset">Recentrer la caméra</div></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2 data-sec="sensors">Capteurs <span class="car">▾</span></h2>
+    <div class="body">
+      <div class="scount"><span><i class="dot" style="background:#34d399"></i><b id="sc-ok">0</b> OK</span>
+        <span><i class="dot" style="background:#fbbf24"></i><b id="sc-warn">0</b> Alerte</span>
+        <span><i class="dot" style="background:#f87171"></i><b id="sc-fault">0</b> Défaut</span></div>
+      <div class="toggle"><span>Pertes thermiques</span><div class="sw on" id="t-temp"></div></div>
+      <div class="row"><div class="lab">Flux batterie (prod. − conso.) <b id="v-battflow">0.0 kW</b></div></div>
+      <div class="btnrow"><div class="chip" id="b-clean">Nettoyer tous les panneaux</div></div>
+      <div id="sensor-list"></div>
+    </div>
+  </div>
+</div>
+
+<div id="popup">
+  <h3><span id="p-title">Panneau 1</span><span id="p-close">✕</span></h3>
+  <div class="pwr" id="p-power" style="color:var(--amber)">0.00 kW</div>
+  <div class="row"><div class="lab">Inclinaison <b id="p-vtilt">35°</b></div>
+    <input id="p-tilt" type="range" min="0" max="90" step="1" value="35"></div>
+  <div class="row"><div class="lab">Orientation <b id="p-vaz">0°</b></div>
+    <input id="p-az" type="range" min="-90" max="90" step="1" value="0"></div>
+  <div class="pstat">Décision <b id="p-dsrc">—</b></div>
+  <div class="pdec" id="p-dec"></div>
+  <div class="pstat">Capteurs <b id="p-status">OK</b></div>
+  <div id="p-sensors"></div>
+  <div class="reset" id="p-clean">Nettoyer ce panneau</div>
+  <div class="reset" id="p-reset">Réinitialiser (suivre la station)</div>
+</div>
+
+<div id="hint">Cliquez un panneau pour le régler individuellement — glissez pour orbiter</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/objects/Sky.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/objects/Lensflare.js"></script>
+<script src="js/scenery.js"></script>
+<script src="js/datasource.js"></script>
+<script src="js/backend.js"></script>
+<script src="js/decision.js"></script>
+<script src="js/gate.js"></script>
+<script src="js/weatherfx.js"></script>
+<script src="data/ouarzazate-2024-06.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const deg=THREE.MathUtils.degToRad, clamp=THREE.MathUtils.clamp;
+
+// ---------- SCENE / CAMERA / RENDERER ----------
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 1400);
+camera.position.set(22,14,28);
+const renderer=new THREE.WebGLRenderer({antialias:true, powerPreference:'high-performance'});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.25;
+$('scene').appendChild(renderer.domElement);
+
+const controls=new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping=true; controls.dampingFactor=0.06;
+controls.maxPolarAngle=Math.PI/2-0.04; controls.minDistance=8; controls.maxDistance=150;
+
+// ---------- SKY DOME (gradient shader, day/night) ----------
+const skyMat=new THREE.ShaderMaterial({
+  uniforms:{top:{value:new THREE.Color(0x1e6fd9)}, bot:{value:new THREE.Color(0xbfe3ff)}},
+  vertexShader:`varying vec3 vP; void main(){ vP=(modelMatrix*vec4(position,1.0)).xyz; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);} `,
+  fragmentShader:`uniform vec3 top; uniform vec3 bot; varying vec3 vP;
+    void main(){ float h=normalize(vP).y*0.5+0.5; gl_FragColor=vec4(mix(bot,top,pow(max(h,0.0),0.55)),1.0);
+      #include <encodings_fragment>
+    } `,   // encodings_fragment : sortie correcte dans la cible RGBE du PMREM (identité à l'écran)
+  side:THREE.BackSide, depthWrite:false
+});
+const skyDome=new THREE.Mesh(new THREE.SphereGeometry(380,24,16), skyMat);   // secours si Sky.js ne charge pas
+scene.add(skyDome);
+scene.fog=new THREE.FogExp2(0x0a0e1a, 0.007);
+
+// stars
+const starGeo=new THREE.BufferGeometry();
+const starPos=new Float32Array(1000*3);
+for(let i=0;i<1000;i++){
+  const r=340, th=Math.random()*Math.PI*2, ph=Math.acos(Math.random()*0.9);
+  starPos[i*3]=r*Math.sin(ph)*Math.cos(th); starPos[i*3+1]=Math.abs(r*Math.cos(ph))*0.9+40; starPos[i*3+2]=r*Math.sin(ph)*Math.sin(th);
+}
+starGeo.setAttribute('position', new THREE.BufferAttribute(starPos,3));
+const starMat=new THREE.PointsMaterial({color:0xffffff,size:1.4,transparent:true,opacity:0,depthWrite:false});
+const stars=new THREE.Points(starGeo, starMat); scene.add(stars);
+
+// ---------- LIGHTS ----------
+const ambient=new THREE.AmbientLight(0x33415c, 0.5); scene.add(ambient);
+const hemi=new THREE.HemisphereLight(0x9cc0e6, 0xa0714c, 0.5); scene.add(hemi);
+const sunLight=new THREE.DirectionalLight(0xfff7ed, 3.5);
+// Ombres sur la station et le champ PV décoratif (±100 m)
+const SUN_LIGHT_DIST=160;
+sunLight.castShadow=true; sunLight.shadow.mapSize.set(4096,4096);
+Object.assign(sunLight.shadow.camera,{near:1,far:400,left:-100,right:100,top:100,bottom:-100});
+sunLight.shadow.bias=-0.0004; sunLight.shadow.normalBias=0.03; scene.add(sunLight);
+
+// ---------- SUN VISUAL (core + additive glow) ----------
+function glowTexture(inner,outer){
+  const c=document.createElement('canvas'); c.width=c.height=256;
+  const ctx=c.getContext('2d'); const g=ctx.createRadialGradient(128,128,0,128,128,128);
+  g.addColorStop(0,inner); g.addColorStop(0.25,'rgba(255,220,140,.55)'); g.addColorStop(1,outer);
+  ctx.fillStyle=g; ctx.fillRect(0,0,256,256); return new THREE.CanvasTexture(c);
+}
+const glowTex=glowTexture('rgba(255,255,255,1)','rgba(255,150,50,0)');
+const sunGroup=new THREE.Group(); scene.add(sunGroup);
+const sunCoreMat=new THREE.MeshBasicMaterial({color:0xfff066});
+const sunCore=new THREE.Mesh(new THREE.SphereGeometry(3.2,32,32), sunCoreMat); sunGroup.add(sunCore);
+const sunSprite=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+sunSprite.scale.set(26,26,1); sunGroup.add(sunSprite);
+
+// ---------- GROUND ----------
+const floorGeo=new THREE.PlaneGeometry(100,100,80,80);
+const pos=floorGeo.attributes.position;
+for(let i=0;i<pos.count;i++) pos.setZ(i, Math.sin(pos.getX(i)*0.15)*Math.cos(pos.getY(i)*0.15)*0.4);
+floorGeo.computeVertexNormals();
+const floor=new THREE.Mesh(floorGeo, new THREE.MeshStandardMaterial({color:0x1e2430,roughness:.85,metalness:.15}));
+floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor);
+const grid=new THREE.GridHelper(100,40,0x38bdf8,0x1e293b); grid.position.y=0.02; grid.material.transparent=true; grid.material.opacity=0.5; scene.add(grid);
+
+// ---------- ENVIRONMENT MAP (reflets du ciel via PMREM) ----------
+// Scène réduite : le dôme de ciel (même shader, donc mêmes couleurs jour/nuit) + un disque de sol sombre.
+// Rayon 50 < far de fromScene (100) ; la vraie sphère de ciel (380) serait coupée.
+const pmrem=new THREE.PMREMGenerator(renderer);
+const envScene=new THREE.Scene();
+envScene.add(new THREE.Mesh(new THREE.SphereGeometry(50,24,16), skyMat));
+const envGround=new THREE.Mesh(new THREE.CircleGeometry(50,24), new THREE.MeshBasicMaterial({color:0x1e2430}));
+envGround.rotation.x=-Math.PI/2; envGround.position.y=-2; envScene.add(envGround);
+let envRT=null;
+function updateEnvMap(){
+  const rt=pmrem.fromScene(envScene, 0, 0.1, 100);
+  if(envRT) envRT.dispose();
+  envRT=rt; scene.environment=rt.texture;
+}
+floor.material.envMapIntensity=0.35;
+
+// ---------- SOLAR PANELS ----------
+const stationGroup=new THREE.Group(); scene.add(stationGroup);
+const metalMat=new THREE.MeshStandardMaterial({color:0x94a3b8,metalness:.85,roughness:.25});
+const darkMat=new THREE.MeshStandardMaterial({color:0x1e293b,metalness:.9,roughness:.3});
+const pvMat=new THREE.MeshStandardMaterial({color:0x0284c7,metalness:.7,roughness:.12});
+const PV_COLOR=0x1d4f86;   // bleu profond des modules monocristallins
+
+// Texture de cellules photovoltaïques (niveaux de gris, teintée par material.color : bleu en vue normale, rampe en heatmap).
+function cellTexture(){
+  const W=1024, H=512, cols=12, rows=6, gap=6;
+  const c=document.createElement('canvas'); c.width=W; c.height=H;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#5b6675'; ctx.fillRect(0,0,W,H);
+  const cw=(W-gap)/cols, ch=(H-gap)/rows;
+  for(let r=0;r<rows;r++) for(let k=0;k<cols;k++){
+    const x=gap+k*cw, y=gap+r*ch, w=cw-gap, h=ch-gap;
+    const g=ctx.createLinearGradient(x,y,x+w,y+h);
+    g.addColorStop(0,'#f2f6fa'); g.addColorStop(1,'#c4cfdb');
+    ctx.fillStyle=g; ctx.fillRect(x,y,w,h);
+    ctx.fillStyle='rgba(255,255,255,.55)';                       // busbars
+    for(let b=1;b<=3;b++) ctx.fillRect(x+w*b/4-1, y, 2, h);
+    ctx.fillStyle='rgba(60,72,88,.18)';                          // doigts de collecte
+    for(let f=6;f<h;f+=6) ctx.fillRect(x, y+f, w, 1);
+  }
+  const t=new THREE.CanvasTexture(c);
+  t.anisotropy=renderer.capabilities.getMaxAnisotropy();
+  return t;
+}
+const cellTex=cellTexture();
+pvMat.color.setHex(PV_COLOR); pvMat.map=cellTex; pvMat.metalness=.55; pvMat.roughness=.18; pvMat.envMapIntensity=.7;
+
+const panels=[];
+function makePanel(x,z,idx){
+  const group=new THREE.Group(); group.position.set(x,0,z);
+  const base=new THREE.Mesh(new THREE.BoxGeometry(1.5,.4,1.5),darkMat); base.position.y=.2; base.castShadow=base.receiveShadow=true; group.add(base);
+  const mast=new THREE.Mesh(new THREE.CylinderGeometry(.25,.25,3,16),metalMat); mast.position.y=1.7; mast.castShadow=true; group.add(mast);
+  const tilt=new THREE.Group(); tilt.position.y=3.2; group.add(tilt);
+  const frame=new THREE.Mesh(new THREE.BoxGeometry(6.5,.12,3.5),metalMat); frame.castShadow=true; tilt.add(frame);
+  const pv=new THREE.Mesh(new THREE.BoxGeometry(6.3,.06,3.3),pvMat.clone()); pv.position.y=.08; pv.castShadow=true; tilt.add(pv);  // matériau propre pour la heatmap
+  stationGroup.add(group);
+  return {index:idx, group, tilt, pv, tiltDeg:35, orientation:0, manual:false, capacity:5.5};
+}
+[[-5,-4],[5,-4],[-5,4],[5,4]].forEach(([x,z],i)=>panels.push(makePanel(x,z,i)));
+
+// ---------- DÉCOR RÉALISTE (js/scenery.js) : ciel physique, terrain, équipements, nuages ----------
+const scenery=createScenery({scene, renderer, cellTex});
+floor.visible=false; grid.visible=false;   // grille « jumeau numérique » disponible dans Vue
+const weatherFx=createWeatherFx({scene, THREE});   // scénarios météo simulés (js/weatherfx.js)
+if(scenery.sky){
+  // Le ciel physique et le sable clair saturent à l'exposition d'origine (1.25).
+  renderer.toneMappingExposure=0.8; scenery.sky.material.uniforms.skyGain.value=0.6;
+  skyDome.visible=false;
+  envScene.children[0].visible=false; envScene.add(scenery.envSky);
+}
+envGround.material.color.setHex(0xb08660);
+
+// ---------- CLOUDS ----------
+const cloudsGroup=new THREE.Group(); scene.add(cloudsGroup);
+function cloudTexture(){
+  const c=document.createElement('canvas'); c.width=c.height=128;
+  const ctx=c.getContext('2d'); const g=ctx.createRadialGradient(64,64,0,64,64,64);
+  g.addColorStop(0,'rgba(255,255,255,1)'); g.addColorStop(.6,'rgba(255,255,255,.55)'); g.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=g; ctx.fillRect(0,0,128,128); return new THREE.CanvasTexture(c);
+}
+const cloudTex=cloudTexture();
+let cloudTint=new THREE.Color(0xffffff);
+function makeCloud(){
+  if(scenery) return scenery.makeCloud();   // nuages volumétriques du décor réaliste
+  const grp=new THREE.Group();
+  const puffs=5+Math.floor(Math.random()*4);
+  for(let i=0;i<puffs;i++){
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:cloudTex, color:cloudTint.clone(), transparent:true, opacity:0.55+Math.random()*0.3, depthWrite:false}));
+    const sc=2.2+Math.random()*2.6; s.scale.set(sc*1.6, sc, 1);
+    s.position.set((Math.random()-0.5)*5,(Math.random()-0.5)*0.8,(Math.random()-0.5)*3);
+    grp.add(s);
+  }
+  grp.position.set((Math.random()-0.5)*70, 8+Math.random()*6, (Math.random()-0.5)*70);
+  grp.userData.speed=0.6+Math.random()*0.8;
+  return grp;
+}
+function setCloudCount(n){
+  while(cloudsGroup.children.length<n) cloudsGroup.add(makeCloud());
+  while(cloudsGroup.children.length>n) cloudsGroup.remove(cloudsGroup.children[cloudsGroup.children.length-1]);
+  $('s-clouds').textContent=cloudsGroup.children.length;
+}
+const weatherPresets={clear:{n:3,tint:0xffffff}, partly:{n:7,tint:0xdbe6f2}, overcast:{n:13,tint:0x8b96a8}};
+let weatherPreset='clear';
+function applyWeather(key){
+  const w=weatherPresets[key]; weatherPreset=key; setCloudCount(w.n); cloudTint=new THREE.Color(w.tint);
+  if(!scenery) cloudsGroup.children.forEach(g=>g.children.forEach(s=>s.material.color.copy(cloudTint)));   // sinon teinte gérée par scenery.update
+}
+applyWeather('clear');   // cohérent avec le chip « Ciel clair » actif au démarrage
+
+// ---------- PARAMS ----------
+const P={timeOfDay:12, autoTime:true, speed:0.05, sunIntensity:3.5, tracking:true, globalTilt:35, azimuth:0, wind:1.0, tempEffect:true, viewMode:'normal'};
+
+// ---------- SUN / SKY UPDATE ----------
+const nightSky={top:new THREE.Color(0x040611),bot:new THREE.Color(0x000000)};
+const duskSky={top:new THREE.Color(0xff9a56),bot:new THREE.Color(0x2d1b4e)};
+const daySky={top:new THREE.Color(0x1e6fd9),bot:new THREE.Color(0xbfe3ff)};
+let lastSin=0, lastElevDeg=35;
+
+// ---------- DATA SOURCES ----------
+// Toutes les entrées environnementales passent par une source (js/datasource.js) ; updateEnvironment() copie
+// l'EnvironmentFrame dans `sim`. Rien d'autre ne lit la source directement.
+const SUN_DIST=60;
+const simulationSource={ id:'simulation', label:'Simulation', days:1,
+  read({timeOfDay}){
+    const angle=(timeOfDay/24)*Math.PI*2 - Math.PI/2;
+    const pos={x:Math.cos(angle)*SUN_DIST, y:Math.sin(angle)*SUN_DIST, z:Math.sin(angle*0.4)*10};
+    const a=anglesFromSunVector(pos), s=Math.sin(angle), cf=cloudFactorFor(cloudsGroup.children.length);
+    const dirY=pos.y/Math.hypot(pos.x,pos.y,pos.z);
+    // Modèle historique « tout direct » : DNI = 1000 × sin × nuages × intensité, pas de diffus ni d'albédo.
+    const dni=1000*Math.max(0,s)*cf*P.sunIntensity/REF_SUN_INTENSITY;
+    return {status:'ok', sunElevDeg:a.elevDeg, sunAzimuthDeg:a.azimuthDeg, sunPos:pos, sunSin:s,
+      ghi:dni*Math.max(0,dirY), ghiClear:null, dni, dhi:0, albedo:0,
+      ambientC:ambientTemp(timeOfDay), windMs:P.wind*WIND_MS_PER_UNIT, dustPct:null, cloudFactor:cf, datetime:null};
+  }};
+const DATA_SOURCES={simulation:simulationSource, replay:createReplaySource(), live:createLiveSource()};
+let dataMode='simulation', dataDay=0;
+
+function updateEnvironment(){
+  const src=DATA_SOURCES[dataMode];
+  let f=src.read({timeOfDay:P.timeOfDay, day:dataDay});
+  const status = f ? f.status : 'no-data';
+  if(!f) f=simulationSource.read({timeOfDay:P.timeOfDay});   // pas de données : on affiche la simulation, signalé par sim.data.status
+  f=weatherFx.applyToFrame(f);   // scénario simulé : prioritaire sur les données (bandeau « Scénario simulé »)
+  sim.env.condition=f.condition||null; sim.env.hail=!!f.hail; sim.data.scenario=f.scenario||null;
+  const pos=f.sunPos || sunVectorFromAngles(f.sunElevDeg, f.sunAzimuthDeg, SUN_DIST);
+  sim.sun.pos.set(pos.x,pos.y,pos.z); sim.sun.sin=f.sunSin; sim.sun.elevDeg=f.sunElevDeg; sim.sun.azimuthDeg=f.sunAzimuthDeg;
+  Object.assign(sim.env, {ghi:f.ghi, ghiClear:f.ghiClear, dni:f.dni, dhi:f.dhi, albedo:f.albedo, ambientC:f.ambientC, windMs:f.windMs, dustPct:f.dustPct});
+  sim.weather.cloudFactor=f.cloudFactor;
+  sim.data.mode=dataMode; sim.data.status=status; sim.data.datetime=f.datetime; sim.data.live=status==='ok' && f.live || null;
+  if(sim.data.live && f.solarHour!=null){ P.timeOfDay=f.solarHour; $('i-time').value=P.timeOfDay; $('v-time').textContent=P.timeOfDay.toFixed(1)+'h'; }   // live : heure réelle du site
+  if(f.dustPct!==null && f.dustPct!==undefined) panels.forEach(p=>{ p.dust=clamp(f.dustPct,0,100); });
+  // Hors simulation, les nuages affichés suivent l'indice de clarté mesuré (visuel uniquement).
+  if(dataMode!=='simulation' && status==='ok' && f.cloudFactor!==null && f.sunElevDeg>5){
+    const key = f.cloudFactor>0.75 ? 'clear' : f.cloudFactor>0.45 ? 'partly' : 'overcast';
+    if(key!==weatherPreset){ applyWeather(key); syncWeatherChips(); }
+  }
+}
+
+let siteShown='earth';
+function applySite(site){   // décor : désert d'Ouarzazate ou sol lunaire (visuel uniquement)
+  if(site===siteShown) return; siteShown=site;
+  const moon = site==='moon';
+  if(scenery.setSite) scenery.setSite(site);
+  skyDome.visible = moon || !scenery.sky;
+  if(scenery.envSky) scenery.envSky.visible = !moon;
+  envScene.children[0].visible = moon || !scenery.sky;
+  envGround.material.color.setHex(moon ? 0x6d6e72 : 0xb08660);
+  cloudsGroup.visible = !moon;
+  $('s-clouds').textContent = moon ? 0 : cloudsGroup.children.length;
+}
+function updateSunAndSky(){
+  updateEnvironment();
+  applySite(currentSite());
+  const moon = siteShown==='moon';
+  sunLight.position.copy(sim.sun.pos).setLength(SUN_LIGHT_DIST); sunGroup.position.copy(sim.sun.pos);
+  const s=sim.sun.sin; lastSin=s;
+  const elev=Math.max(0,s);
+  // Sans atmosphère, pas d'atténuation par la masse d'air : le Soleil éclaire pleinement dès qu'il est levé.
+  sunLight.intensity = moon ? (s>0 ? P.sunIntensity : 0) : elev*P.sunIntensity;
+  ambient.intensity=(0.15+elev*0.4)*(scenery.sky?0.35:1);   // la lumière hémisphérique du décor prend le relais
+  lastElevDeg=THREE.MathUtils.radToDeg(Math.asin(clamp(s,-1,1)));
+
+  const top=new THREE.Color(), bot=new THREE.Color();
+  if(s>=0){ top.lerpColors(duskSky.top, daySky.top, s); bot.lerpColors(duskSky.bot, daySky.bot, s); }
+  else { const t=-s; top.lerpColors(duskSky.top, nightSky.top, t); bot.lerpColors(duskSky.bot, nightSky.bot, t); }
+  if(moon){ top.setHex(0x000000); bot.setHex(0x020203); }   // ciel noir, étoiles visibles même de jour
+  skyMat.uniforms.top.value.copy(top); skyMat.uniforms.bot.value.copy(bot);
+  scene.fog.color.copy(bot);
+  starMat.opacity = moon ? 0.9 : clamp(-s*1.4, 0, 0.9);
+
+  const warm = !moon && s<0.28;   // dans le vide, pas de rougissement par l'atmosphère
+  sunCoreMat.color.setHex(warm?0xff5500:0xfff066);
+  sunSprite.material.color.setHex(warm?0xff6a00:0xffcc55);
+  sunCore.visible = sunSprite.visible = (moon || !scenery.sky) && s > -0.12;   // le ciel physique dessine son propre disque
+
+  $('s-time').textContent=hhmm(P.timeOfDay);
+  $('s-sky').textContent = moon ? (s>0 ? 'Jour lunaire' : 'Nuit lunaire') : s>0.55?'Jour': s>0?'Lever/coucher': s>-0.3?'Crépuscule':'Nuit';
+}
+function hhmm(t){ t=((t%24)+24)%24; const h=Math.floor(t), m=Math.round((t-h)*60); return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'); }
+
+// ---------- STATION UPDATE + POWER ----------
+const sunDir=new THREE.Vector3();
+// État de simulation en lecture seule, recalculé à chaque image par updateStation().
+// Les capteurs et le rendu lisent ici plutôt que dans la scène.
+const sim={time:12, sun:{dir:sunDir, pos:new THREE.Vector3(), elevDeg:0, azimuthDeg:0, sin:0}, weather:{preset:'clear', clouds:0, cloudFactor:1},
+  env:{ambientC:20, windMs:4, ghi:0, ghiClear:null, dni:0, dhi:0, albedo:0, dustPct:null},
+  data:{mode:'simulation', status:'ok', datetime:null, live:null},   // live : métadonnées + météo spatiale du backend
+  panels:panels.map(p=>({id:p.index, tiltDeg:0, orientation:0, incidence:0, gPoa:0, cellC:20, dust:0, powerKW:0})), totalKW:0,
+  battery:{socPct:55, capacityKWh:40, loadKW:0, flowKW:0},
+  decisions:[]};   // décision appliquée par panneau (voir CONTRACT.md)
+const REF_SUN_INTENSITY=3.5;   // valeur par défaut du curseur = irradiance nominale (1000 W/m²)
+const NOCT=45, TEMP_COEF=-0.004, DUST_MAX_LOSS=0.25, WIND_MS_PER_UNIT=4;
+panels.forEach((p,i)=>{ p.dust=0; p.snow=0; p.dustFactor=[1,1.15,0.9,1.25][i]; });   // snow : couverture neigeuse en %   // salissure en %, vitesse propre à chaque panneau
+const _n=new THREE.Vector3(), _up=new THREE.Vector3(0,1,0), _zAxis=new THREE.Vector3(0,0,1);
+// yawDeg : rotation du panneau relative à la station (le group du panneau).
+function panelIncidence(tiltDeg, yawDeg){
+  _n.set(0,1,0).applyAxisAngle(_zAxis, -deg(tiltDeg)).applyAxisAngle(_up, deg(yawDeg+P.azimuth));
+  return Math.max(0, _n.dot(sunDir));
+}
+// Irradiance dans le plan du panneau (W/m²), transposition isotrope :
+// POA = DNI·cos(incidence) + DHI·(1+cos β)/2 + GHI·albédo·(1−cos β)/2   (β = inclinaison)
+function planeIrradiance(incidence, tiltDeg){
+  const e=sim.env, c=Math.cos(deg(tiltDeg));
+  return e.dni*incidence + e.dhi*(1+c)/2 + e.ghi*e.albedo*(1-c)/2;
+}
+// Température ambiante : min 10 °C vers 3h, max 26 °C vers 15h.
+function ambientTemp(t){ return 18 + 8*Math.sin(2*Math.PI*(t-9)/24); }
+// Modèle NOCT avec refroidissement par le vent (facteur 9.5/(5.7+3.8·v), = 1 à 1 m/s).
+function cellTemp(gPoa, ambientC, windMs){ return ambientC + (NOCT-20)/800*gPoa*9.5/(5.7+3.8*windMs); }
+// Production DC : capacité × G/1000 × pertes thermiques × salissure, écrêtée à la capacité (onduleur).
+function computePower(panel, gPoa, cellC){
+  const tempF = P.tempEffect ? 1 + TEMP_COEF*(cellC-25) : 1;
+  const dustF = 1 - DUST_MAX_LOSS*panel.dust/100;
+  const snowF = 1 - panel.snow/100;   // couverture neigeuse : lumière bloquée
+  return Math.min(panel.capacity, panel.capacity*gPoa/1000*tempF*dustF*snowF);
+}
+// Consommation du site : talon + pic du matin + pic du soir (kW).
+function siteLoad(t){ return 3 + 1.5*Math.exp(-((t-8)**2)/2) + 4*Math.exp(-((t-19.5)**2)/4); }
+// Intègre les grandeurs cumulatives (poussière, batterie) sur dtHours d'heure simulée.
+function stepSimulation(dtHours){
+  if(dtHours<=0) return;
+  if(sim.env.dustPct===null)   // sinon la poussière vient des données
+    panels.forEach(p=>{ p.dust = Math.min(100, p.dust + (0.2 + 0.6*sim.env.windMs/WIND_MS_PER_UNIT)*p.dustFactor*dtHours); });
+  const b=sim.battery, net=sim.totalKW - b.loadKW;
+  const dE = (net>0 ? net*0.95 : net/0.95)*dtHours;
+  b.socPct = clamp(b.socPct + dE/b.capacityKWh*100, 0, 100);
+}
+function cleanPanels(list=panels){ list.forEach(p=>{ p.dust=0; }); }
+// Remet l'état cumulatif à zéro pour rendre les tests déterministes.
+function resetForTest(){ cleanPanels(); panels.forEach(p=>{ p.snow=0; }); sim.battery.socPct=55; weatherFx.demo=null; weatherFx.message=null; weatherFx.set('normal',{instant:true}); }
+// Effets cumulés des scénarios (dt en secondes réelles) : poussière (sable +, pluie −), neige (accumulation, glissement, fonte).
+function applyScenarioAccumulation(dt){
+  const r=weatherFx.rates();
+  panels.forEach((p,i)=>{
+    if(r.dustPerS) p.dust=clamp(p.dust + r.dustPerS*p.dustFactor*dt, 0, 100);
+    if(r.snowPerS>0) p.snow=Math.min(100, p.snow + r.snowPerS*dt);
+    if(p.snow>0){
+      if(sim.panels[i].tiltDeg>=SNOW_SHED_MIN_TILT) p.snow-=SNOW_SHED_PER_S*dt;          // inclinaison forte : la neige glisse
+      if(r.snowPerS===0 && sim.env.ambientC>0) p.snow-=SNOW_MELT_PER_S*dt;              // fonte
+      p.snow=Math.max(0, p.snow);
+    }
+  });
+}
+// Diagnostic de nettoyage (démo) : perte due à la poussière, journalisé.
+function runCleaningDiagnostic(){
+  const mean=panels.reduce((a,p)=>a+p.dust,0)/panels.length, worst=panels.reduce((a,p)=>p.dust>a.dust?p:a);
+  const lossPct=DUST_MAX_LOSS*mean;
+  const msg = mean>DUSTY_PCT
+    ? `Diagnostic : poussière moyenne ${mean.toFixed(0)} % (panneau ${worst.index+1} : ${worst.dust.toFixed(0)} %), perte ≈ ${lossPct.toFixed(0)} % : nettoyage recommandé.`
+    : `Diagnostic : poussière moyenne ${mean.toFixed(0)} %, pas de nettoyage nécessaire.`;
+  gate.record({action:'—', targetTilt:null, targetAzimuth:null, flags: mean>DUSTY_PCT ? ['DUSTY'] : [], reason: msg}, 'diagnostic', lastDecisionState ? gateContext(lastDecisionState) : null);
+  weatherFx.message=msg;
+  return msg;
+}
+// Ciel clair (≤3 nuages) : ~2 % de perte ; couvert (13) : 75 %.
+function cloudFactorFor(n){
+  return 1 - (n<=3 ? 0.02*n/3 : 0.02 + 0.73*Math.min(1,(n-3)/10));
+}
+// ---------- DECISION (js/decision.js) ----------
+// Format détaillé dans CONTRACT.md. Le suivi solaire est la politique locale (source 'fallback') ;
+// en mode 'api', la décision du backend (POST /api/v1/agent/decision) est appliquée en source Live tant qu'elle est récente.
+const CONSTRAINTS={tiltMinDeg:0, tiltMaxDeg:85, stowTiltDeg:0, windStowMs:11, minSunElevDeg:1};
+// Seuil de nuit selon le site : sur la Lune (pôle Sud), le Soleil rase l'horizon à ±1,5° ; sans atmosphère,
+// il éclaire tant qu'il est au-dessus de l'horizon local, d'où un seuil à −1° (pas de STOW NIGHT au-dessus).
+const SITE_NIGHT_ELEV_DEG={earth:1, moon:-1};
+const siteConstraints=()=>({...CONSTRAINTS, minSunElevDeg:SITE_NIGHT_ELEV_DEG[currentSite()]});
+const decisionProvider=createDecisionProvider();
+const gate=createGate();   // porte de validation : 3 modes d'autonomie (js/gate.js)
+// yaw de scène (relatif à la station) ↔ azimut boussole de la normale du panneau (0 N, 90 E, 180 S).
+const compassOfYaw = yaw => (((90 - (yaw + P.azimuth)) % 360) + 360) % 360;
+const yawOfCompass = az => 90 - az - P.azimuth;
+function buildDecisionState(){
+  const R=DATA_SOURCES.replay.data, e=sim.env;
+  return {
+    schemaVersion: DECISION_SCHEMA_VERSION,
+    simTimeHours: P.timeOfDay, datetime: sim.data.datetime,
+    site: dataMode==='replay' && R ? R.site : SITE_DEFAULT,
+    dataSource: {mode: sim.data.mode, status: sim.data.status},
+    sun: {elevationDeg: sim.sun.elevDeg, azimuthDeg: sim.sun.azimuthDeg},
+    weather: {ghiWm2: e.ghi, dniWm2: e.dni, dhiWm2: e.dhi, albedo: e.albedo, ghiClearWm2: e.ghiClear,
+      ambientC: e.ambientC, windMs: e.windMs, cloudFactor: sim.weather.cloudFactor, condition: e.condition||null, hail: !!e.hail},
+    station: {tracking: P.tracking, azimuthOffsetDeg: P.azimuth, totalKW: sim.totalKW,
+      battery: {socPct: sim.battery.socPct, capacityKWh: sim.battery.capacityKWh, loadKW: sim.battery.loadKW, flowKW: sim.battery.flowKW}},
+    panels: panels.map((p,i)=>{ const sp=sim.panels[i]; return {
+      panelId: i, capacityKW: p.capacity, manual: p.manual, tiltDeg: sp.tiltDeg, azimuthDeg: compassOfYaw(sp.orientation),
+      incidence: sp.incidence, poaWm2: sp.gPoa, cellTempC: sp.cellC, dustPct: p.dust, snowPct: p.snow, powerKW: sp.powerKW}; }),
+    sensors: sensors.map(s=>({id: s.id, panelId: s.target, unit: s.unit, value: s.value, status: s.state, note: s.note || null})),
+    constraints: siteConstraints(),
+    model: {noctC: NOCT, tempCoefPerC: TEMP_COEF, dustMaxLoss: DUST_MAX_LOSS, thermalLosses: P.tempEffect},
+    spaceWeather: spaceWeatherState(),
+  };
+}
+// Site courant : la Lune seulement quand la source Live la fournit.
+function currentSite(){ return sim.data.live?.body || 'earth'; }
+// Météo spatiale du backend (mode live) ; null hors live. La validation d'un STOW passe par la porte (js/gate.js).
+function spaceWeatherState(){
+  const simulated=weatherFx.spaceWeather(); if(simulated) return simulated;   // scénario « Tempête solaire »
+  const sw=sim.data.live?.spaceWeather;
+  if(!sw) return null;
+  return {level: sw.level, riskFlags: sw.risk_flags, recommendedAction: sw.recommended_action, reasons: sw.reasons};
+}
+const SOURCE_LABEL={ai:'IA', fallback:'Secours', override:'Manuel', gate:'Attente'};
+const SOURCE_COLOR={ai:'var(--cyan)', fallback:'var(--amber)', override:'var(--dim)', gate:'#f87171'};
+function gateContext(st){
+  return {panels: st.panels.map(p=>({panelId:p.panelId, tiltDeg:p.tiltDeg, azimuthDeg:p.azimuthDeg, manual:p.manual})),
+    socPct: st.station.battery.socPct, simTime: P.timeOfDay, site: currentSite()};
+}
+
+let lastDecisionState=null;   // dernier état envoyé au fournisseur (réutilisé pour l'appel backend asynchrone)
+function updateStation(){
+  sunDir.copy(sim.sun.pos).normalize();
+  lastDecisionState=buildDecisionState();
+  const decisions = P.tracking ? gate.process(decisionProvider.current(lastDecisionState), gateContext(lastDecisionState)) : [];
+
+  const env=sim.env;
+  let total=0, trackedTilt=null;
+  panels.forEach((p,i)=>{
+    const sp=sim.panels[i];
+    let t, yaw, d;
+    if(!P.tracking || p.manual){   // pilotage manuel : inclinaison globale ou propre au panneau
+      t = p.manual ? p.tiltDeg : P.globalTilt; yaw = p.orientation;
+      d = {panelId:i, action:'HOLD', targetTilt:t, targetAzimuth:compassOfYaw(yaw), expectedGainKW:0, uncertainty:null, riskFlags:[], source:'override'};
+    } else {
+      d = decisions.find(x=>x.panelId===i);
+      if(d.action==='MOVE'){ t=clamp(d.targetTilt, CONSTRAINTS.tiltMinDeg, CONSTRAINTS.tiltMaxDeg); yaw=yawOfCompass(d.targetAzimuth) + p.orientation; }
+      else if(d.action==='STOW'){ t=clamp(d.targetTilt ?? CONSTRAINTS.stowTiltDeg, CONSTRAINTS.tiltMinDeg, CONSTRAINTS.tiltMaxDeg); yaw=sp.orientation; }   // à plat, ou inclinaison max (grêle)
+      else { t=sp.tiltDeg; yaw=sp.orientation; }   // HOLD
+      if(trackedTilt===null) trackedTilt=t;
+    }
+    sim.decisions[i]=d;
+    p.tilt.rotation.z = -deg(t);
+    p.group.rotation.y = deg(yaw);
+    sp.tiltDeg=t; sp.orientation=yaw; sp.incidence=panelIncidence(t, yaw);
+    sp.gPoa=planeIrradiance(sp.incidence, t);
+    sp.cellC=cellTemp(sp.gPoa, env.ambientC, env.windMs);
+    sp.dust=p.dust;
+    sp.powerKW=computePower(p, sp.gPoa, sp.cellC);
+    total += sp.powerKW;
+  });
+  stationGroup.rotation.y = deg(P.azimuth);
+  const shownTilt = P.tracking && trackedTilt!==null ? trackedTilt : P.globalTilt;
+  $('v-tilt').textContent=Math.round(shownTilt)+'°';
+  $('i-tilt').disabled = P.tracking; $('i-tilt').value = shownTilt;
+  sim.time=P.timeOfDay;
+  sim.weather.preset=weatherPreset; sim.weather.clouds=cloudsGroup.children.length;
+  sim.totalKW=total;
+  sim.battery.loadKW=siteLoad(P.timeOfDay); sim.battery.flowKW=total-sim.battery.loadKW;
+  $('s-power').textContent = total.toFixed(1)+' kW';
+
+  if(selected){
+    const wp=new THREE.Vector3(); selected.tilt.getWorldPosition(wp);
+    const v=wp.clone().project(camera);
+    const x=(v.x*0.5+0.5)*innerWidth, y=(-v.y*0.5+0.5)*innerHeight;
+    popup.style.left=clamp(x,120,innerWidth-120)+'px'; popup.style.top=Math.max(popup.offsetHeight*1.16+84,y)+'px';
+    $('p-power').textContent = sim.panels[selected.index].powerKW.toFixed(2)+' kW';
+    if(!selected.manual) syncPopupSliders();   // suit l'inclinaison appliquée (suivi solaire)
+  }
+}
+
+// ---------- VIRTUAL SENSORS ----------
+// Chaque capteur est une observation bruitée de `sim`. Les pannes injectées ne modifient que la mesure, jamais la physique.
+const SENSOR_HZ=2, HISTORY_LEN=60, STUCK_SAMPLES=6;
+function gauss(){ let u=0,v=0; while(!u) u=Math.random(); while(!v) v=Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+// Statut selon des seuils : [warn, fault] ; `below` si l'alarme est sur valeur basse.
+const byThreshold=(warn, fault, below=false)=>v=> below ? (v<fault?'FAULT':v<warn?'WARNING':'OK') : (v>fault?'FAULT':v>warn?'WARNING':'OK');
+function makeSensor(def){
+  return Object.assign({noise:0, min:-Infinity, status:()=> 'OK', target:null, group:'Station'}, def,
+    {value:null, history:[], state:'OK', note:'', fault:null});
+}
+const sensors=[
+  makeSensor({id:'pyr', label:'Pyranomètre', unit:'W/m²', digits:0, read:s=>s.env.ghi, noise:v=>2+0.01*v, min:0}),
+  makeSensor({id:'anemo', label:'Anémomètre', unit:'m/s', digits:1, read:s=>s.env.windMs, noise:()=>0.1, min:0, status:byThreshold(10,13)}),
+  makeSensor({id:'total', label:'Total station', unit:'kW', digits:2, read:s=>s.totalKW, noise:v=>0.003*v, min:0}),
+  makeSensor({id:'batt', label:'Batterie (SoC)', unit:'%', digits:1, read:s=>s.battery.socPct, noise:()=>0.05, min:0, status:byThreshold(20,5,true)}),
+  ...panels.flatMap(p=>{
+    const i=p.index, g='Panneau '+(i+1);
+    return [
+      // Ratio de performance : mesure / production idéale (sans pertes thermiques ni salissure), si assez de lumière.
+      makeSensor({id:'p'+i+'.power', label:'Wattmètre', group:g, target:i, unit:'kW', digits:2, read:s=>s.panels[i].powerKW, noise:v=>0.005+0.005*v, min:0,
+        status:(v,s)=>{ const ideal=panels[i].capacity*s.panels[i].gPoa/1000; if(s.panels[i].gPoa<150||ideal<=0) return 'OK';
+          const pr=v/ideal; return pr<0.6?'FAULT':pr<0.85?'WARNING':'OK'; }}),
+      makeSensor({id:'p'+i+'.temp', label:'Temp. cellule', group:g, target:i, unit:'°C', digits:1, read:s=>s.panels[i].cellC, noise:()=>0.2, status:byThreshold(65,80)}),
+      makeSensor({id:'p'+i+'.dust', label:'Poussière', group:g, target:i, unit:'%', digits:1, read:s=>s.panels[i].dust, noise:()=>0.15, min:0, status:byThreshold(30,60)}),
+    ];
+  }),
+];
+const sensorById=id=>sensors.find(s=>s.id===id);
+
+function sampleSensor(s, now){
+  const truth=s.read(sim);
+  let v;
+  if(s.fault?.type==='dropout') v=null;
+  else if(s.fault?.type==='stuck') v = s.value ?? truth;
+  else {
+    v = Math.max(s.min, truth + (typeof s.noise==='function' ? s.noise(Math.abs(truth)) : s.noise)*gauss());
+    if(s.fault?.type==='drift') v += s.fault.ratePerMin*(now - s.fault.since)/60000;
+  }
+  s.value=v; s.history.push(v); if(s.history.length>HISTORY_LEN) s.history.shift();
+  const recent=s.history.slice(-STUCK_SAMPLES);
+  if(v===null){ s.state='FAULT'; s.note='perte de signal'; }
+  else if(recent.length===STUCK_SAMPLES && v!==s.min && recent.every(x=>x===v)){ s.state='WARNING'; s.note='valeur figée'; }
+  else { s.state=s.status(v, sim); s.note=''; }
+}
+function sampleSensors(now=performance.now()){ sensors.forEach(s=>sampleSensor(s, now)); }
+
+// Interface d'injection de pannes (les boutons viendront plus tard) :
+//   sensorFaults.inject('p0.temp', 'stuck') | ('pyr', 'drift', {ratePerMin:50}) | ('batt', 'dropout')
+const sensorFaults={
+  types:['stuck','drift','dropout'],
+  inject(id, type, opts={}){
+    const s=sensorById(id); if(!s || !this.types.includes(type)) throw new Error('capteur ou type de panne inconnu: '+id+' / '+type);
+    s.fault={type, since:performance.now(), ratePerMin:opts.ratePerMin ?? 1};
+  },
+  clear(id){ const s=sensorById(id); if(s) s.fault=null; },
+  clearAll(){ sensors.forEach(s=>{ s.fault=null; }); },
+  active(){ return sensors.filter(s=>s.fault).map(s=>({id:s.id, ...s.fault})); },
+};
+
+// ---------- SENSOR UI ----------
+const STATUS_COLOR={OK:'#34d399', WARNING:'#fbbf24', FAULT:'#f87171'};
+function fmtSensor(s){ return s.value===null ? '—' : s.value.toFixed(s.digits)+' '+s.unit; }
+function buildSensorList(){
+  const list=$('sensor-list'); list.innerHTML='';
+  let group=null;
+  sensors.forEach(s=>{
+    if(s.group!==group){ group=s.group; const h=document.createElement('div'); h.className='sgroup'; h.textContent=group; list.appendChild(h); }
+    const row=document.createElement('div'); row.className='sensor'; row.title=s.id;
+    row.innerHTML=`<i class="dot"></i><span class="sl">${s.label}</span><b class="sv">—</b><canvas width="64" height="18"></canvas>`;
+    if(s.target!==null){ row.classList.add('clickable'); row.onclick=()=>selectPanel(panels[s.target]); }
+    s.dom={row, dot:row.querySelector('.dot'), val:row.querySelector('.sv'), spark:row.querySelector('canvas')};
+    list.appendChild(row);
+  });
+}
+function drawSpark(cv, hist, color){
+  const ctx=cv.getContext('2d'), w=cv.width, h=cv.height; ctx.clearRect(0,0,w,h);
+  const vals=hist.filter(v=>v!==null); if(vals.length<2) return;
+  let lo=Math.min(...vals), hi=Math.max(...vals); if(hi-lo<1e-6){ lo-=1; hi+=1; }
+  ctx.strokeStyle=color; ctx.lineWidth=1.2; ctx.beginPath();
+  let pen=false;
+  hist.forEach((v,i)=>{
+    if(v===null){ pen=false; return; }
+    const x=i/(HISTORY_LEN-1)*w, y=h-1-(v-lo)/(hi-lo)*(h-2);
+    pen ? ctx.lineTo(x,y) : ctx.moveTo(x,y); pen=true;
+  });
+  ctx.stroke();
+}
+function renderSensorUI(){
+  const counts={OK:0, WARNING:0, FAULT:0};
+  sensors.forEach(s=>{
+    counts[s.state]++;
+    s.dom.dot.style.background=STATUS_COLOR[s.state];
+    s.dom.val.textContent=fmtSensor(s);
+    s.dom.row.title=s.id+' — '+s.state+(s.note?' ('+s.note+')':'');
+    drawSpark(s.dom.spark, s.history, STATUS_COLOR[s.state]);
+  });
+  $('sc-ok').textContent=counts.OK; $('sc-warn').textContent=counts.WARNING; $('sc-fault').textContent=counts.FAULT;
+  const b=sim.battery;
+  $('s-batt').textContent=Math.round(b.socPct)+'%';
+  $('s-batt').style.color = b.socPct<20 ? STATUS_COLOR.WARNING : '';
+  $('v-battflow').textContent=(b.flowKW>=0?'+':'')+b.flowKW.toFixed(1)+' kW';
+  renderDataInfo();
+  renderDecisionInfo();
+  renderScenario();
+  if(selected) renderPopupSensors();
+}
+function renderPopupSensors(){
+  const i=selected.index, rows=['power','temp','dust'].map(k=>sensorById('p'+i+'.'+k));
+  $('p-sensors').innerHTML=rows.map(s=>`<div class="psens"><i class="dot" style="background:${STATUS_COLOR[s.state]}"></i>`+
+    `<span>${s.label}</span><b>${fmtSensor(s)}</b></div>`).join('')+
+    (panels[i].snow>0.5 ? `<div class="psens"><i class="dot" style="background:#e5edf5"></i><span>Neige (couverture)</span><b>${panels[i].snow.toFixed(0)} %</b></div>` : '');
+  const worst = rows.some(s=>s.state==='FAULT')?'FAULT': rows.some(s=>s.state==='WARNING')?'WARNING':'OK';
+  const st=$('p-status'); st.textContent=worst; st.style.color=STATUS_COLOR[worst];
+}
+buildSensorList();
+
+// ---------- HEATMAP ----------
+// Rampes séquentielles à teinte unique, sombre (≈0) → clair (max). Ambre = production (couleur « production » de l'UI).
+const HEATMAPS={
+  power:{label:'Production', unit:'kW', min:0, max:5.5, digits:1, value:i=>sim.panels[i].powerKW,
+    stops:['#2b1d03','#6b4806','#b07b0c','#e3a514','#fbbf24','#fde68a']},
+  temp:{label:'Température cellule', unit:'°C', min:10, max:80, digits:0, value:i=>sim.panels[i].cellC,
+    stops:['#2a0e06','#6e2410','#b8431b','#eb6834','#f7a582','#ffd9c7']},
+};
+const _heatA=new THREE.Color(), _heatB=new THREE.Color();
+function rampColor(stops, t, out){
+  t=clamp(t,0,1)*(stops.length-1);
+  const k=Math.min(Math.floor(t), stops.length-2);
+  return out.copy(_heatA.set(stops[k])).lerp(_heatB.set(stops[k+1]), t-k);
+}
+function updateHeatmap(){
+  const hm=HEATMAPS[P.viewMode];
+  panels.forEach(p=>{
+    const m=p.pv.material;
+    if(hm) rampColor(hm.stops, (hm.value(p.index)-hm.min)/(hm.max-hm.min), m.emissive);
+  });
+}
+// Heatmap = couleur purement émissive, sans tone mapping ni reflets : les panneaux affichent exactement les couleurs de la légende,
+// de jour comme de nuit. Changer emissiveMap/toneMapped recompile le shader : fait une seule fois par changement de mode.
+function applyPanelLook(heat){
+  panels.forEach(p=>{
+    const m=p.pv.material;
+    m.color.setHex(heat ? 0x000000 : PV_COLOR);
+    m.emissive.setHex(0x000000);
+    m.emissiveMap = heat ? cellTex : null;
+    m.envMapIntensity = heat ? 0 : pvMat.envMapIntensity;
+    m.toneMapped = !heat;
+    m.needsUpdate = true;
+  });
+}
+function setViewMode(mode){
+  if(!!HEATMAPS[mode] !== !!HEATMAPS[P.viewMode]) applyPanelLook(!!HEATMAPS[mode]);
+  P.viewMode=mode;
+  document.querySelectorAll('[data-view]').forEach(c=>c.classList.toggle('active', c.dataset.view===mode));
+  const hm=HEATMAPS[mode], lg=$('heat-legend');
+  lg.style.display = hm ? 'flex' : 'none';
+  if(hm){
+    $('hl-title').textContent=hm.label;
+    $('hl-bar').style.background='linear-gradient(90deg,'+hm.stops.join(',')+')';
+    $('hl-min').textContent=hm.min.toFixed(hm.digits)+' '+hm.unit;
+    $('hl-mid').textContent=((hm.min+hm.max)/2).toFixed(hm.digits)+' '+hm.unit;
+    $('hl-max').textContent=hm.max.toFixed(hm.digits)+' '+hm.unit;
+  }
+  updateHeatmap();
+}
+
+// ---------- SELECTION / RAYCAST ----------
+const raycaster=new THREE.Raycaster(), pointer=new THREE.Vector2();
+let selected=null, outline=null, down=null;
+const popup=$('popup');
+
+function selectPanel(p){
+  selected=p;
+  removeOutline();
+  outline=new THREE.BoxHelper(p.tilt, 0xfbbf24); scene.add(outline);
+  $('p-title').textContent='Panneau '+(p.index+1);
+  syncPopupSliders();
+  renderPopupSensors();
+  renderPopupDecision();
+  popup.style.display='block';
+}
+// Les curseurs du popup affichent l'inclinaison réellement appliquée (suivi ou globale si le panneau n'est pas manuel).
+function syncPopupSliders(){
+  if(!selected) return;
+  const t = selected.manual ? selected.tiltDeg : Math.round(sim.panels[selected.index].tiltDeg);
+  $('p-tilt').value=t; $('p-vtilt').textContent=Math.round(t)+'°';
+  $('p-az').value=selected.orientation; $('p-vaz').textContent=Math.round(selected.orientation)+'°';
+}
+// BoxHelper n'a pas de dispose() en r128 : on libère géométrie et matériau.
+function removeOutline(){
+  if(!outline) return;
+  scene.remove(outline); outline.geometry.dispose(); outline.material.dispose(); outline=null;
+}
+function deselectPanel(){
+  selected=null; removeOutline();
+  popup.style.display='none';
+}
+renderer.domElement.addEventListener('pointerdown', e=>{ down={x:e.clientX,y:e.clientY}; });
+renderer.domElement.addEventListener('pointerup', e=>{
+  if(!down) return;
+  const moved=Math.hypot(e.clientX-down.x, e.clientY-down.y); down=null;
+  if(moved>6) return;
+  const rect=renderer.domElement.getBoundingClientRect();
+  pointer.x=((e.clientX-rect.left)/rect.width)*2-1; pointer.y=-((e.clientY-rect.top)/rect.height)*2+1;
+  raycaster.setFromCamera(pointer, camera);
+  const hits=raycaster.intersectObjects(panels.map(p=>p.group), true);
+  if(hits.length){
+    let o=hits[0].object; while(o && !panels.find(p=>p.group===o)) o=o.parent;
+    const found=panels.find(p=>p.group===o); if(found) selectPanel(found);
+  } else deselectPanel();
+});
+
+// ---------- UI WIRING ----------
+document.querySelectorAll('.sec h2').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('closed')));
+
+$('i-time').oninput=e=>{ P.timeOfDay=+e.target.value; $('v-time').textContent=P.timeOfDay.toFixed(1)+'h'; };
+$('t-auto').onclick=e=>{ P.autoTime=!P.autoTime; e.target.classList.toggle('on',P.autoTime); };
+$('i-speed').oninput=e=>{ P.speed=+e.target.value; $('v-speed').textContent=P.speed.toFixed(3); };
+$('i-sun').oninput=e=>{ P.sunIntensity=+e.target.value; $('v-sun').textContent=P.sunIntensity.toFixed(1); };
+document.querySelectorAll('[data-time]').forEach(c=>c.onclick=()=>{ P.timeOfDay=+c.dataset.time; $('i-time').value=P.timeOfDay; $('v-time').textContent=P.timeOfDay.toFixed(1)+'h'; });
+
+function setTracking(on){ P.tracking=on; $('t-track').classList.toggle('on',on); gate.takeover(!on); updateStation(); renderDecisionInfo(); }
+$('t-track').onclick=()=>setTracking(!P.tracking);
+$('i-tilt').oninput=e=>{ P.globalTilt=+e.target.value; };
+$('i-az').oninput=e=>{ P.azimuth=+e.target.value; $('v-az').textContent=P.azimuth+'°'; };
+
+document.querySelectorAll('[data-preset]').forEach(c=>c.onclick=()=>{
+  document.querySelectorAll('[data-preset]').forEach(x=>x.classList.remove('active')); c.classList.add('active');
+  applyWeather(c.dataset.preset);
+});
+$('i-wind').oninput=e=>{ P.wind=+e.target.value; $('v-wind').textContent=P.wind.toFixed(1); };
+document.querySelectorAll('[data-view]').forEach(c=>c.onclick=()=>setViewMode(c.dataset.view));
+
+// Source des données
+let dataError=null;
+function syncWeatherChips(){ document.querySelectorAll('[data-preset]').forEach(x=>x.classList.toggle('active', x.dataset.preset===weatherPreset)); }
+function setDataSource(mode){
+  dataMode=mode; dataDay=0; dataError=null;
+  if(mode==='replay' && !DATA_SOURCES.replay.data && window.SOLARNAV_SAMPLE_REPLAY) loadReplay(window.SOLARNAV_SAMPLE_REPLAY, 'Exemple NASA POWER', SITE_DEFAULT.name);
+  if(mode==='simulation'){ panels.forEach(p=>{ if(sim.env.dustPct!==null) p.dust=0; }); }
+  document.querySelectorAll('[data-source]').forEach(c=>c.classList.toggle('active', c.dataset.source===mode));
+  $('src-replay').style.display = mode==='replay' ? 'flex' : 'none';
+  $('src-live').style.display = mode==='live' ? 'flex' : 'none';
+  // Ces curseurs ne pilotent la physique qu'en simulation ; ailleurs les valeurs viennent des données.
+  const locked = mode!=='simulation';
+  ['i-sun','i-wind'].forEach(id=>{ $(id).classList.toggle('locked', locked); $(id).title = locked ? 'Piloté par la source de données' : ''; });
+  document.querySelectorAll('[data-preset]').forEach(c=>c.classList.toggle('locked', locked));
+  if(!locked) applyWeather(document.querySelector('[data-preset].active')?.dataset.preset || 'clear');
+  updateSunAndSky(); updateStation(); renderDataInfo();
+}
+function loadReplay(input, name, siteName){
+  try { const D=DATA_SOURCES.replay.load(input, name); if(siteName) D.site.name=siteName; dataError=null; dataDay=0; }
+  catch(e){ dataError='Fichier refusé : '+e.message; }
+  renderDataInfo();
+}
+function renderDataInfo(){
+  const d=sim.data, R=DATA_SOURCES.replay.data;
+  let html;
+  if(dataMode==='simulation') html='Modèle interne : soleil, nuages, vent et intensité réglables ci-dessous.';
+  else if(dataMode==='replay') html = R
+    ? `<b>${R.site.name}</b> (${R.site.lat.toFixed(2)}°, ${R.site.lon.toFixed(2)}°)<br>${R.startDate} · ${R.days} j · ${R.records.length} relevés horaires`+
+      (DATA_SOURCES.replay.fileName?` · ${DATA_SOURCES.replay.fileName}`:'')+`<br>Instant : <b>${(d.datetime||'').replace('T',' ')} (heure solaire)</b>`
+    : 'Aucun fichier chargé : simulation affichée.';
+  else html=renderLiveInfo();
+  if(dataError) html+=`<br><span class="err">${dataError}</span>`;
+  setHTML('src-info', html);
+  const s=$('s-data'), liveStatus = dataMode==='live' ? DATA_SOURCES.live.status() : null;
+  s.textContent = d.status!=='ok' ? (dataMode==='live'?'Live ∅':'Aucune') : dataMode==='simulation' ? 'Simu'
+    : dataMode==='live' ? LIVE_LABEL[liveStatus] : 'Replay '+(d.datetime||'').slice(5,10).split('-').reverse().join('/');
+  s.style.color = d.status!=='ok' ? STATUS_COLOR.WARNING : dataMode==='live' ? LIVE_COLOR[liveStatus] : '';
+  if(weatherFx.shown){ s.textContent='Scénario'; s.style.color='#f87171'; }   // jamais confondu avec le réel
+}
+
+// Live : chaque donnée affiche sa source, son âge et son statut (Live / Cache / Secours).
+const LIVE_LABEL={live:'Live', cache:'Cache', fallback:'Secours'};
+const LIVE_COLOR={live:'#34d399', cache:'var(--amber)', fallback:'#f87171'};
+const SW_LABEL={none:'calme', moderate:'modérée', strong:'FORTE', unknown:'inconnue'};
+const esc=t=>String(t).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function ago(s){
+  if(s<60) return 'à l’instant';
+  if(s<3600) return `il y a ${Math.round(s/60)} min`;
+  return `il y a ${Math.floor(s/3600)} h ${String(Math.round(s%3600/60)).padStart(2,'0')}`;
+}
+function sourceLine(m){
+  const age = m.age_s + (DATA_SOURCES.live.ageMs() || 0)/1000;   // âge côté backend + temps écoulé depuis la réception
+  const when = m.status==='fallback' && m.id!=='nasa_power_replay' && m.id!=='simulation' ? 'indisponible' : ago(age);
+  return `<span class="lbadge ${m.status}">${LIVE_LABEL[m.status]}</span>${esc(m.label)} · ${when}`+
+    (m.error ? ` <span class="err">(${esc(m.error)})</span>` : '');
+}
+function renderLiveInfo(){
+  const L=DATA_SOURCES.live, live=sim.data.live;
+  if(!live) return 'Aucune donnée live reçue du backend : <b>simulation affichée</b>.'+
+    (!L.available ? '<br><span class="err">Backend indisponible : ouvrir la page via uvicorn (http://127.0.0.1:8000/digital_twin/index.html).</span>'
+      : L.lastError ? `<br><span class="err">${esc(L.lastError)}</span>` : L.inFlight ? '<br>Connexion au backend…' : '');
+  const seen=new Set(), metas=live.sources.filter(m=>!seen.has(m.id) && seen.add(m.id));
+  let html=`<b>${esc(live.site.name)}</b> (${live.site.lat_deg.toFixed(2)}°, ${live.site.lon_deg.toFixed(2)}°)`+
+    `<br>Soleil : élévation <b>${sim.sun.elevDeg.toFixed(2)}°</b>, azimut <b>${sim.sun.azimuthDeg.toFixed(1)}°</b>`+
+    metas.map(m=>'<br>'+sourceLine(m)).join('');
+  const sw=live.spaceWeather;
+  html+=`<br>Météo spatiale : <b style="color:${sw.level==='strong'?'#f87171':sw.level==='moderate'?'var(--amber)':''}">${SW_LABEL[sw.level]}</b>`+
+    (sw.xray_class ? ` · X ${esc(sw.xray_class)}` : '')+(sw.solar_wind_speed_km_s!=null ? ` · vent ${Math.round(sw.solar_wind_speed_km_s)} km/s` : '')+
+    (sw.imf_bz_nt!=null ? ` · Bz ${sw.imf_bz_nt.toFixed(1)} nT` : '')+(sw.max_kp_24h!=null ? ` · Kp ${sw.max_kp_24h.toFixed(1)}` : '');
+  html+=sw.sources.map(m=>'<br>'+sourceLine(m)).join('');
+  if(L.lastError) html+=`<br><span class="err">${esc(L.lastError)} — dernières données conservées</span>`;
+  return html;
+}
+function setLiveBody(body){
+  DATA_SOURCES.live.setBody(body);
+  document.querySelectorAll('[data-body]').forEach(c=>c.classList.toggle('active', c.dataset.body===body));
+  updateSunAndSky(); updateStation(); renderDataInfo(); renderDecisionInfo();
+}
+// Rafraîchi à 2 Hz : on ne réécrit le DOM que s'il change (un bouton recréé en permanence perdrait des clics).
+function setHTML(id, html){ const el=$(id); if(el.dataset.html!==html){ el.innerHTML=html; el.dataset.html=html; } }
+document.querySelectorAll('[data-source]').forEach(c=>c.onclick=()=>setDataSource(c.dataset.source));
+document.querySelectorAll('[data-body]').forEach(c=>c.onclick=()=>setLiveBody(c.dataset.body));
+
+// Pilotage (fournisseur de décision)
+function setDecisionMode(mode){
+  decisionProvider.setMode(mode);
+  document.querySelectorAll('[data-dmode]').forEach(c=>c.classList.toggle('active', c.dataset.dmode===mode));
+  $('api-row').style.display = mode==='api' ? 'block' : 'none';
+  renderDecisionInfo();
+}
+function decisionSummary(){
+  const srcs=[...new Set(sim.decisions.map(d=>d?.source).filter(Boolean))];
+  return srcs.length===1 ? srcs[0] : srcs.length ? 'mixed' : 'fallback';
+}
+function renderDecisionInfo(){
+  const dp=decisionProvider, agg=decisionSummary();
+  const s=$('s-dec');
+  s.textContent = agg==='mixed' ? 'Mixte' : SOURCE_LABEL[agg];
+  s.style.color = agg==='mixed' ? 'var(--text)' : SOURCE_COLOR[agg];
+  let html = `Décision appliquée : <b style="color:${s.style.color}">${s.textContent}</b>`;
+  if(!P.tracking) html += ' — suivi désactivé (réglage manuel)';
+  if(dp.mode==='local') html += '<br>Politique locale : suivi 2 axes adapté, mises en sécurité (vent, grêle, tempête solaire, nuit).';
+  else {
+    const fresh = dp.latest && performance.now()-dp.latest.receivedAt <= dp.maxAgeMs;
+    html += `<br>Backend : ${fresh ? 'réponse reçue en <b>'+Math.round(dp.lastLatencyMs)+' ms</b>' : 'pas de réponse récente → <b>secours local</b>'}`+
+      ` · ${dp.okCount} OK / ${dp.failCount} échecs`;
+    if(fresh) html += `<br>« ${esc(dp.latest.decision.reason)} » <span style="color:var(--dim)">(${esc(dp.latest.decision.explanation_source)})</span>`;
+    if(dp.warning) html += `<div class="swalert">${esc(dp.warning)}</div>`;
+    if(dp.lastError) html += `<br><span class="err">Dernière erreur : ${esc(dp.lastError)}</span>`;
+  }
+  setHTML('dec-info', html);
+  renderGate();
+  if(selected) renderPopupDecision();
+}
+// ---------- Porte de validation : modes, file, journal ----------
+const FLAG_LABEL={ROTATION_45:'rotation > 45°', LOW_BATTERY:'batterie < 20 %', HIGH_UNCERTAINTY:'incertitude élevée', PHYSICS_ML_MISMATCH:'désaccord physique/ML',
+  DIAGNOSTIC_ALERT:'alerte diagnostic', SPACE_WEATHER:'tempête solaire', HAIL:'grêle', HIGH_WIND:'vent fort', STOW:'mise en sécurité'};
+const target=c=>c.action==='HOLD' ? '' : ` → ${Math.round(c.targetTilt)}° / az ${Math.round(c.targetAzimuth)}°`;
+function setAutonomy(mode){
+  gate.setMode(mode);
+  document.querySelectorAll('[data-autonomy]').forEach(c=>c.classList.toggle('active', c.dataset.autonomy===mode));
+  updateStation(); renderDecisionInfo();
+}
+function renderGate(){
+  const info = gate.mode==='manual' ? 'Chaque décision attend votre validation.'
+    : gate.mode==='semi' ? 'Seules les décisions à risque attendent votre validation.' : 'Toutes les décisions s’appliquent directement.';
+  setHTML('gate-info', info + ' Sans réponse en 30 s : MOVE → HOLD, STOW appliqué.' + (!P.tracking ? '<br><b>Reprise manuelle active</b> : suivi coupé.' : ''));
+  $('b-takeover').textContent = P.tracking ? 'Reprise manuelle' : 'Rendre la main à l’IA';
+  // Cartes : créées une fois, seul le compte à rebours est mis à jour (un bouton recréé perdrait des clics).
+  const box=$('gate-queue'), ids=new Set(gate.queue.map(c=>String(c.id)));
+  [...box.children].forEach(el=>{ if(!ids.has(el.dataset.id)) el.remove(); });
+  gate.queue.forEach(c=>{
+    let el=box.querySelector(`[data-id="${c.id}"]`);
+    if(!el){
+      el=document.createElement('div'); el.className='gcard'+(c.action==='STOW'?' stow':''); el.dataset.id=c.id;
+      el.innerHTML=`<div class="gh"><span><b>${c.action}</b>${target(c)}</span><span class="gt"></span></div>`+
+        `<div class="greason">${esc(c.reason||'—')}</div>`+
+        (c.flags.length ? c.flags.map(f=>`<span class="flag">${FLAG_LABEL[f]||f}</span>`).join('') : '<span>aucun drapeau de risque</span>')+
+        `<div class="btnrow"><div class="chip ok" data-approve="${c.id}">Approuver</div><div class="chip no" data-refuse="${c.id}">Refuser</div></div>`;
+      box.appendChild(el);
+    }
+    const sec=Math.ceil(gate.remainingMs(c)/1000);
+    el.querySelector('.gt').textContent = `${sec} s → ${c.action==='STOW' ? 'appliqué' : 'HOLD'}`;
+  });
+  $('gate-count').textContent=gate.log.length;
+  setHTML('gate-log', gate.log.slice(0,20).map(e=>`<div class="gl">${e.at.toLocaleTimeString('fr-FR')}`+
+    (e.simTime!=null ? ` · site ${hhmm(e.simTime)}` : '')+` · ${AUTONOMY_LABEL[e.mode]} · <b>${e.action}</b>${e.targetTilt!=null ? target(e) : ''}`+
+    (e.flags.length ? ' · '+e.flags.join(', ') : '')+`<br>validé par : <b>${esc(e.by)}</b>${e.reason ? ' — '+esc(e.reason) : ''}</div>`).join(''));
+}
+$('gate-queue').addEventListener('click', e=>{
+  const a=e.target.dataset.approve, r=e.target.dataset.refuse;
+  if(a) gate.approve(+a); else if(r) gate.refuse(+r); else return;
+  updateStation(); renderDecisionInfo();
+});
+document.querySelectorAll('[data-autonomy]').forEach(c=>c.onclick=()=>setAutonomy(c.dataset.autonomy));
+$('b-takeover').onclick=()=>setTracking(!P.tracking);
+function renderPopupDecision(){
+  const d=sim.decisions[selected.index]; if(!d) return;
+  const src=$('p-dsrc'); src.textContent=SOURCE_LABEL[d.source]; src.style.color=SOURCE_COLOR[d.source];
+  const gain = typeof d.expectedGainKW==='number' ? ` · gain ${d.expectedGainKW>=0?'+':''}${d.expectedGainKW.toFixed(2)} kW` : '';
+  const unc = typeof d.uncertainty==='number' ? ` ± ${Math.round(d.uncertainty*100)} %` : '';
+  const tgt = d.action==='MOVE' ? ` → ${Math.round(d.targetTilt)}° / az ${Math.round(d.targetAzimuth)}°` : '';
+  $('p-dec').innerHTML = `<b>${d.action}</b>${tgt}${gain}${unc}` + (d.riskFlags.length ? '<br>'+d.riskFlags.map(f=>`<span class="flag">${f}</span>`).join('') : '')+
+    (d.reason ? `<br><span class="reason">${esc(d.reason)}</span>` : '');
+}
+document.querySelectorAll('[data-dmode]').forEach(c=>c.onclick=()=>setDecisionMode(c.dataset.dmode));
+$('b-sample').onclick=()=>{ if(window.SOLARNAV_SAMPLE_REPLAY) loadReplay(window.SOLARNAV_SAMPLE_REPLAY, 'Exemple NASA POWER', SITE_DEFAULT.name); else { dataError='data/ouarzazate-2024-06.js introuvable'; renderDataInfo(); } };
+$('f-replay').onchange=e=>{
+  const file=e.target.files[0]; if(!file) return;
+  file.text().then(txt=>loadReplay(txt, file.name)); e.target.value='';
+};
+$('b-reset').onclick=()=>{ camera.position.set(22,14,28); controls.target.set(0,0,0); controls.update(); };
+
+$('p-close').onclick=deselectPanel;
+$('p-tilt').oninput=e=>{ selected.manual=true; selected.tiltDeg=+e.target.value; $('p-vtilt').textContent=e.target.value+'°'; };
+$('p-az').oninput=e=>{ selected.orientation=+e.target.value; $('p-vaz').textContent=e.target.value+'°'; };
+$('p-clean').onclick=()=>{ if(!selected) return; cleanPanels([selected]); updateStation(); sampleSensors(); renderSensorUI(); };
+$('b-clean').onclick=()=>{ cleanPanels(); updateStation(); sampleSensors(); renderSensorUI(); };
+$('t-grid').onclick=e=>{ grid.visible=!grid.visible; e.target.classList.toggle('on',grid.visible); };
+$('t-temp').onclick=e=>{ P.tempEffect=!P.tempEffect; e.target.classList.toggle('on',P.tempEffect); };
+$('p-reset').onclick=()=>{ if(!selected) return; selected.manual=false; selected.orientation=0; updateStation(); syncPopupSliders(); };
+
+// ---------- Scénarios météo (UI) ----------
+const SCENARIO_LABEL=weatherFx.labels();
+let demoSaved=null;
+function setScenario(id){
+  weatherFx.set(id);
+  document.querySelectorAll('[data-scenario]').forEach(c=>c.classList.toggle('active', c.dataset.scenario===id));
+  renderScenario();
+}
+function renderScenario(){
+  const b=$('scenario-banner'), fx=weatherFx;
+  document.querySelectorAll('[data-scenario]').forEach(c=>c.classList.toggle('active', c.dataset.scenario===fx.id));
+  $('b-demo').textContent = fx.demo ? `■ Arrêter la démo (${Math.max(0, Math.ceil(60-fx.demo.t))} s)` : '▶ Démo automatique (60 s)';
+  if(!fx.shown && !fx.demo){ b.style.display='none'; return; }
+  b.style.display='block';
+  const src = dataMode==='live' ? 'live' : dataMode==='replay' ? 'replay' : 'de simulation';
+  setHTML('scenario-banner', `⚠ <b>Scénario simulé</b> : ${fx.active ? SCENARIO_LABEL[fx.id] : 'retour au calme'} — prioritaire sur les données ${src}, ne reflète pas le réel`+
+    (fx.message ? `<br>${esc(fx.message)}` : ''));
+}
+function startDemo(){
+  demoSaved={autoTime:P.autoTime, timeOfDay:P.timeOfDay};
+  P.autoTime=false; $('t-auto').classList.remove('on'); P.timeOfDay=12; $('i-time').value=12; $('v-time').textContent='12.0h';
+  weatherFx.startDemo({ diagnostic: runCleaningDiagnostic, end(){
+    if(demoSaved){ P.autoTime=demoSaved.autoTime; $('t-auto').classList.toggle('on',P.autoTime); demoSaved=null; } } });
+  renderScenario();
+}
+document.querySelectorAll('[data-scenario]').forEach(c=>c.onclick=()=>{ if(weatherFx.demo) weatherFx.stopDemo(); setScenario(c.dataset.scenario); });
+$('b-demo').onclick=()=>{ if(weatherFx.demo) weatherFx.stopDemo(); else startDemo(); renderScenario(); };
+
+// ---------- LOOP ----------
+const clock=new THREE.Clock();
+let sensorClock=1;   // échantillonne dès la première image
+let envClock=1;
+const _sunDirNow=new THREE.Vector3();
+function animate(){
+  requestAnimationFrame(animate);
+  const rawDt=clock.getDelta(), dt=Math.min(rawDt, 0.25);   // borne : onglet en arrière-plan
+  const realDt=Math.min(rawDt, 1);   // scénarios, démo : temps réel (même si le rendu est lent)
+  const dtHours = P.autoTime ? P.speed*dt*5 : 0;
+  if(P.autoTime){
+    const next=(P.timeOfDay + dtHours)%24;
+    if(next<P.timeOfDay) dataDay=(dataDay+1)%Math.max(1, DATA_SOURCES[dataMode].days||1);   // minuit : jour suivant du replay
+    P.timeOfDay=next; $('i-time').value=P.timeOfDay; $('v-time').textContent=P.timeOfDay.toFixed(1)+'h';
+  }
+  updateSunAndSky();
+  const windUnits=sim.env.windMs/WIND_MS_PER_UNIT;
+  const CLOUD_WRAP = scenery ? 300 : 40;
+  cloudsGroup.children.forEach(c=>{ c.position.x += 2*windUnits*c.userData.speed*dt*(scenery?3:1); if(c.position.x>CLOUD_WRAP) c.position.x=-CLOUD_WRAP; });
+  scenery.update({sunDir:_sunDirNow.copy(sim.sun.pos).normalize(), sunLight, hemi, clouds:cloudsGroup, weather:weatherFx.visualWeather()||weatherPreset, windMs:sim.env.windMs, dt, camera});
+  weatherFx.update(realDt, {fog:scene.fog, sunLight});   // scénario : rampe, démo, particules, éclairs, brouillard
+  applyScenarioAccumulation(realDt);
+  updateStation();
+  if(P.tracking && lastDecisionState) decisionProvider.tick(lastDecisionState);   // appel backend asynchrone (mode 'api', source Live)
+  stepSimulation(dtHours);
+  sensorClock += dt;
+  if(sensorClock >= 1/SENSOR_HZ){ sensorClock=0; sampleSensors(); renderSensorUI(); }
+  envClock += dt;
+  if(envClock >= 0.5){ envClock=0; updateEnvMap(); }   // le ciel change lentement : 2 mises à jour/s suffisent
+  updateHeatmap();
+  if(outline) outline.update();
+  controls.update();
+  renderer.render(scene, camera);
+}
+addEventListener('resize', ()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+animate();
+</script>
+</body>
+</html>

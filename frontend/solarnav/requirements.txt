@@ -1,0 +1,9 @@
+# Serveur applicatif SolarNav (optionnel : le tableau de bord marche en statique)
+fastapi>=0.110
+uvicorn[standard]>=0.27
+python-dotenv>=1.0
+
+# Necessaire uniquement pour servir le modele entraine (/api/predict)
+joblib>=1.3
+numpy>=1.26
+scikit-learn>=1.4

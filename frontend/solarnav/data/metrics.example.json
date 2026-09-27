@@ -1,0 +1,21 @@
+{
+  "model": "ExtraTrees hybride — 100 arbres",
+  "dataset": "40 000 exemples · 60 % orbites reelles (ISS, Hubble, NOAA-19) · 40 % simules",
+  "headline":  { "mae_deg": 0.45, "r2": 0.999, "energy_pct": 99.9, "speedup_vs_formula": 17 },
+  "baseline":  { "mae_deg": 7.9,  "r2": 0.72,  "energy_pct": 96.8 },
+  "generalisation": {
+    "train_mae_deg": 0.36,
+    "test_mae_deg": 0.45,
+    "unseen_mae_deg": 0.49,
+    "shuffled_r2": -0.04,
+    "theoretical_r2_ceiling": 0.9997
+  },
+  "hard_cases": [
+    { "case": "Ombre de la Terre", "model": 0.24, "baseline": 89.8 },
+    { "case": "Poussiere forte",   "model": 0.46, "baseline": 11.3 },
+    { "case": "Surchauffe",        "model": 0.77, "baseline": 26.9 },
+    { "case": "Soleil au zenith",  "model": 0.55, "baseline": 8.9 }
+  ],
+  "checks_passed": 18,
+  "checks_total": 18
+}
