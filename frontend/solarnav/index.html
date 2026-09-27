@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>SolarNav — Tableau de bord</title>
+<meta name="description" content="Tableau de bord d’orientation de panneau solaire : angle prédit, correction apprise, énergie récupérée, performance du modèle." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23f0a01e'/><circle cx='16' cy='16' r='6' fill='%23fff8e8'/></svg>" />
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ============ Sprite SVG : icones (outline, trait 1.7) ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <defs>
+  <g id="i-grid"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></g>
+  <g id="i-cube"><path d="M12 2.6 20.6 7v10L12 21.4 3.4 17V7z"/><path d="M3.4 7 12 11.6 20.6 7"/><path d="M12 11.6v9.8"/></g>
+  <g id="i-chart"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M21 20H3"/></g>
+  <g id="i-help"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .9-1 1.6v.4"/><path d="M12 17.1h.01"/></g>
+  <g id="i-bolt"><path d="M13.2 2 4.5 13.4h6.1L10.2 22l8.9-11.6h-6.3z"/></g>
+  <g id="i-shield"><path d="M12 2.8 20 6v6c0 5-3.4 8-8 9.2C7.4 20 4 17 4 12V6z"/></g>
+  <g id="i-alert"><path d="M12 3.6 2.6 20h18.8z"/><path d="M12 9.6v4.2M12 17h.01"/></g>
+  <g id="i-check"><path d="m4.5 12.5 5 5 10-11"/></g>
+  <g id="i-table"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><path d="M3 9.6h18M9.4 9.6V19.5"/></g>
+  <g id="i-target"><circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="3.6"/><path d="M12 1.6v3M12 19.4v3M1.6 12h3M19.4 12h3"/></g>
+  <g id="i-cpu"><rect x="6" y="6" width="12" height="12" rx="2.5"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></g>
+  <g id="i-plug"><path d="M9 2v6M15 2v6"/><path d="M6 8h12v3a6 6 0 0 1-12 0z"/><path d="M12 17v5"/></g>
+  <g id="i-calendar"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8.5 3v4M15.5 3v4"/></g>
+  <g id="i-play"><path d="M7 4.8 19 12 7 19.2z"/></g>
+  <g id="i-pause"><rect x="6.5" y="5" width="4" height="14" rx="1.4"/><rect x="13.5" y="5" width="4" height="14" rx="1.4"/></g>
+ </defs>
+</svg>
+
+<div class="app" id="app">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="15" class="bm-disc"/><path class="bm-ray" d="M17 5.6v3.2M17 25.2v3.2M5.6 17h3.2M25.2 17h3.2M9 9l2.3 2.3M22.7 22.7 25 25M25 9l-2.3 2.3M11.3 22.7 9 25"/><circle cx="17" cy="17" r="5.4" class="bm-core"/></svg>
+      </span>
+      <span class="brand-name">SolarNav</span>
+    </div>
+
+    <p class="nav-label">Tableau de bord</p>
+    <nav class="nav">
+      <a class="nav-item is-active" href="#sec-kpi" data-nav><svg class="ic" viewBox="0 0 24 24"><use href="#i-grid"/></svg><span>Vue d’ensemble</span></a>
+      <a class="nav-item" href="#sec-twin" data-nav><svg class="ic" viewBox="0 0 24 24"><use href="#i-cube"/></svg><span>Jumeau 3D</span></a>
+      <a class="nav-item" href="#sec-control" data-nav><svg class="ic" viewBox="0 0 24 24"><use href="#i-target"/></svg><span>Angle appliqué</span><span class="nav-badge nav-badge--soft" id="navTilt"><span class="ph">&mdash;</span></span></a>
+      <a class="nav-item" href="#sec-inputs" data-nav><svg class="ic" viewBox="0 0 24 24"><use href="#i-plug"/></svg><span>Entrées du modèle</span><span class="nav-dot" id="navEnvDot"></span></a>
+      <a class="nav-item" href="#sec-analytics" data-nav><svg class="ic" viewBox="0 0 24 24"><use href="#i-chart"/></svg><span>Analytique</span></a>
+      <a class="nav-item" href="#sec-forecast" data-nav><svg class="ic" viewBox="0 0 24 24"><use href="#i-calendar"/></svg><span>Prévision 7 jours</span></a>
+      <a class="nav-item" href="#sec-perf" data-nav><svg class="ic" viewBox="0 0 24 24"><use href="#i-cpu"/></svg><span>Performance</span><span class="nav-badge nav-badge--soft" id="navR2">R² —</span></a>
+    </nav>
+
+    <p class="nav-label">Système</p>
+    <nav class="nav">
+      <a class="nav-item" href="journal.html"><svg class="ic" viewBox="0 0 24 24"><use href="#i-shield"/></svg><span>Journal</span><span class="nav-badge nav-badge--soft" id="navLogs">0</span></a>
+      <a class="nav-item" href="#sec-about" data-nav><svg class="ic" viewBox="0 0 24 24"><use href="#i-help"/></svg><span>Intégration</span></a>
+    </nav>
+
+    <a class="side-partners" href="#sec-about" title="Un projet GOMYCODE × NVIDIA">
+      <span>Un projet</span>
+      <img class="gmc" src="assets/img/gomycode.png" alt="GOMYCODE" />
+      <img class="nv" src="assets/img/nvidia.png" alt="NVIDIA" />
+    </a>
+
+    <div class="side-card">
+      <div class="side-card-bg" aria-hidden="true"></div>
+      <div class="side-card-top"><span class="pulse" id="linkPulse"></span><span>Source de données</span></div>
+      <p class="side-card-title" id="sideSource">Détection…</p>
+      <div class="side-card-rows">
+        <div><span>Trames reçues</span><b id="sideFrames">0</b></div>
+        <div><span>Cadence</span><b id="sideRate">— /s</b></div>
+      </div>
+      <div class="side-bar"><i id="sideBar" style="width:0%"></i></div>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <div class="main">
+    <main class="scroll" id="scroll">
+
+      <section class="page-head">
+        <div>
+          <h1>Tableau de bord</h1>
+          <p>Orientation prédictive du panneau &mdash; <b id="sourceName">source en cours de détection</b>&nbsp;&middot;&nbsp;<span id="sourceMode">—</span></p>
+        </div>
+        <div class="clock"><b id="clockTime">--:--</b><i id="clockDate">en attente</i></div>
+      </section>
+
+      <div class="skybar" id="skybar" aria-hidden="true"></div>
+
+      <div class="empty-banner" id="emptyBanner" hidden>
+        <svg class="ic" viewBox="0 0 24 24"><use href="#i-plug"/></svg>
+        <div>
+          <b>Aucune source de télémétrie connectée.</b>
+          <span>Le tableau de bord affiche ce que la simulation lui envoie. Branchez
+            <code>SolarNav.push()</code>, exposez <code>/api/telemetry</code>, ou déposez
+            <code>data/telemetry.json</code> — voir la carte Intégration en bas de page.</span>
+        </div>
+      </div>
+
+      <!-- ---------- KPI ---------- -->
+      <section class="kpis" id="sec-kpi">
+        <article class="kpi kpi--hero">
+          <header><span>Angle prédit</span></header>
+          <p class="kpi-val is-empty" id="kpiAngle"><span class="ph">&mdash;</span><small>°</small></p>
+          <footer><span class="chip chip--onhero" id="kpiAngleSub"><svg class="ic" viewBox="0 0 24 24"><use href="#i-bolt"/></svg>en attente de télémétrie</span></footer>
+          <canvas class="kpi-spark" id="sparkAngle" width="320" height="64"></canvas>
+        </article>
+
+        <article class="kpi kpi--sun">
+          <header><span>Correction apprise</span></header>
+          <p class="kpi-val kpi-val--gain is-empty" id="kpiDelta"><span class="ph">&mdash;</span><small>°</small></p>
+          <footer><span class="chip chip--sun" id="kpiDeltaSub"><svg class="ic" viewBox="0 0 24 24"><use href="#i-check"/></svg>écart à la formule simple</span></footer>
+        </article>
+
+        <article class="kpi">
+          <header><span>Énergie récupérée</span></header>
+          <p class="kpi-val is-empty" id="kpiEnergy"><span class="ph">&mdash;</span><small>%</small></p>
+          <footer><span class="chip" id="kpiEnergySub">du maximum théorique</span></footer>
+        </article>
+
+        <article class="kpi" id="qualityKpi">
+          <header><span id="kpiQualityLbl">Confiance du modèle</span></header>
+          <p class="kpi-val is-empty" id="kpiQuality"><span class="ph">&mdash;</span><small id="kpiQualityUnit">%</small></p>
+          <footer><span class="chip" id="kpiQualitySub"><svg class="ic" viewBox="0 0 24 24"><use href="#i-target"/></svg>—</span></footer>
+        </article>
+      </section>
+
+      <!-- ---------- Grille principale ---------- -->
+      <div class="grid">
+
+        <div class="col col--main">
+
+          <!-- Jumeau numerique -->
+          <a class="card card--twin card--link" id="sec-twin" href="../digital_twin/index.html"
+             title="Ouvrir la simulation 3D complète">
+            <div class="twin-canvas" id="twinCanvas">
+              <div class="twin-fallback" id="twinFallback">
+                <svg class="ic" viewBox="0 0 24 24"><use href="#i-cube"/></svg>
+                <p>Chargement de la scène 3D…</p>
+              </div>
+              <!-- La scène complète de l'équipe, telle quelle. Elle tourne sur sa
+                   propre simulation : le bandeau ci-dessous reste la télémétrie. -->
+              <iframe id="twinFrame" class="twin-frame" src="../digital_twin/index.html"
+                      title="Simulation 3D de la centrale" tabindex="-1" loading="lazy"></iframe>
+            </div>
+            <div class="twin-overlay twin-overlay--tl">
+              <span class="tag tag--live"><i></i>Scène 3D · centrale</span>
+              <span class="tag" id="twinTag">scène autonome</span>
+            </div>
+            <div class="twin-overlay twin-overlay--tr">
+              <span class="tag tag--open">
+                <svg class="ic" viewBox="0 0 24 24"><use href="#i-play"/></svg>
+                Ouvrir la simulation 3D
+              </span>
+            </div>
+            <div class="twin-hud">
+              <div class="hud-item"><span>Élévation soleil</span><b id="hudElev"><span class="ph">&mdash;</span></b></div>
+              <div class="hud-item"><span>Azimut soleil</span><b id="hudAz"><span class="ph">&mdash;</span></b></div>
+              <div class="hud-item"><span>Angle appliqué</span><b id="hudTilt" class="is-accent"><span class="ph">&mdash;</span></b></div>
+              <div class="hud-item"><span>Écart à l’optimum</span><b id="hudErr"><span class="ph">&mdash;</span></b></div>
+              <div class="hud-item"><span>Température</span><b id="hudTemp"><span class="ph">&mdash;</span></b></div>
+              <div class="hud-item"><span>Exposition</span><b id="hudSun"><span class="ph">&mdash;</span></b></div>
+            </div>
+          </a>
+
+          <!-- Angles -->
+          <section class="card" id="sec-analytics">
+            <header class="card-head">
+              <div>
+                <h2>Angles dans le temps</h2>
+                <p class="card-sub">Prédiction du modèle &middot; optimum physique &middot; règle 90° − élévation</p>
+              </div>
+            </header>
+            <div class="legend" id="angleLegend"></div>
+            <div class="chart-wrap"><canvas id="angleChart"></canvas></div>
+          </section>
+
+          <!-- Erreur -->
+          <section class="card" id="sec-error">
+            <header class="card-head">
+              <div>
+                <h2>Erreur absolue</h2>
+                <p class="card-sub">Écart à l’optimum physique, modèle contre formule simple</p>
+              </div>
+              <span class="pill" id="errPill">&mdash;</span>
+            </header>
+            <div class="legend" id="errorLegend"></div>
+            <div class="chart-wrap chart-wrap--sm"><canvas id="errorChart"></canvas></div>
+            <footer class="card-foot">
+              <div class="stat-inline"><span>Erreur moy. modèle</span><b id="sumMaeModel">&mdash;</b></div>
+              <div class="stat-inline"><span>Erreur moy. formule</span><b id="sumMaeBase">&mdash;</b></div>
+              <div class="stat-inline stat-inline--hi"><span>Énergie récupérée</span><b id="sumEnergy">&mdash;</b></div>
+              <div class="stat-inline"><span>Trames analysées</span><b id="sumCount">0</b></div>
+            </footer>
+          </section>
+
+          <!-- Prevision 7 jours -->
+          <section class="card" id="sec-forecast">
+            <header class="card-head">
+              <div>
+                <h2>Prévision 7 jours</h2>
+                <p class="card-sub">Énergie récupérable attendue, heure par heure</p>
+              </div>
+              <span class="pill" id="fcSource">—</span>
+            </header>
+            <div class="fc-heat" id="fcHeat"></div>
+            <div class="fc-legend" id="fcLegend"></div>
+            <div class="fc-days" id="fcDays"></div>
+          </section>
+
+          <!-- Performance du modele -->
+          <section class="card" id="sec-perf">
+            <header class="card-head">
+              <div><h2>Performance du modèle</h2><p class="card-sub" id="perfSub">Campagne de validation de l’équipe modèle</p></div>
+              <span class="pill" id="perfChecks">&mdash;</span>
+            </header>
+            <div class="perf-grid" id="perfGrid"></div>
+            <div class="tbl-mini">
+              <table id="hardTable">
+                <thead><tr><th>Cas difficile</th><th>Modèle</th><th>Formule simple</th><th>Facteur</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <p class="about-note">
+              Chiffres fournis par l’équipe modèle. Déposez <code>data/metrics.json</code> pour
+              qu’ils soient lus depuis le fichier plutôt que depuis les valeurs par défaut.
+            </p>
+          </section>
+
+          <!-- Dernieres trames -->
+          <section class="card" id="sec-table">
+            <header class="card-head">
+              <div><h2>Dernières trames</h2><p class="card-sub">Les douze mesures les plus récentes</p></div>
+            </header>
+            <div class="table-view table-view--flush">
+              <table id="dataTable">
+                <thead><tr><th>Heure</th><th>Élév.</th><th>Formule</th><th>Modèle</th><th>Optimum</th><th>Écart</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Integration -->
+          <section class="card card--about" id="sec-about">
+            <header class="card-head"><div><h2>Intégration</h2><p class="card-sub">Où branchez-vous la simulation et le modèle</p></div></header>
+            <ul class="about-rows">
+              <li><span>Source de télémétrie</span><b id="aboutSource">&mdash;</b></li>
+              <li><span>Prédicteur d’angle</span><b id="aboutModel">&mdash;</b></li>
+              <li><span>Métriques</span><b id="aboutMetrics">valeurs par défaut</b></li>
+            </ul>
+
+            <p class="about-note">Trois façons d’alimenter le tableau de bord, essayées dans cet ordre :</p>
+            <ol class="int-list">
+              <li><b>Injection directe</b> — depuis votre code&nbsp;: <code>SolarNav.push(trame)</code></li>
+              <li><b>API</b> — <code>GET /api/telemetry</code>, interrogée chaque seconde</li>
+              <li><b>Rejeu</b> — <code>data/telemetry.json</code>, relu en boucle</li>
+            </ol>
+            <p class="about-note">Une trame minimale contient les cinq entrées du modèle :</p>
+            <pre class="mini-code">{ "t": 1738072800000, "sun_elevation": 42.3, "sun_azimuth": 170,
+  "is_sunlit": true, "dust_level": 12.5, "surface_temp": 68 }</pre>
+            <p class="about-note">
+              Champs facultatifs reconnus&nbsp;: <code>angle_optimal</code>, <code>angle_predicted</code>,
+              <code>uncertainty</code>, <code>applied_angle</code>, <code>power_w</code>, <code>satellite</code>.
+              Sans <code>angle_predicted</code>, le tableau de bord interroge <code>POST /api/predict</code>.
+            </p>
+            <div class="partner-strip">
+              <span>Un projet</span>
+              <img class="gmc" src="assets/img/gomycode.png" alt="GOMYCODE" />
+              <span class="px">&times;</span>
+              <img class="nv" src="assets/img/nvidia.png" alt="NVIDIA" />
+            </div>
+          </section>
+
+        </div>
+
+        <div class="col col--side">
+
+          <!-- Angle applique -->
+          <section class="card card--control" id="sec-control">
+            <header class="card-head">
+              <div><h2>Angle appliqué</h2><p class="card-sub">Ce que le modèle recommande, et ce que ça vaut</p></div>
+              <span class="pill" id="predSource">&mdash;</span>
+            </header>
+
+            <div class="dome-wrap">
+              <svg class="dome" id="dome" viewBox="0 0 360 212" role="img" aria-label="Coupe verticale : position du soleil et inclinaison du panneau">
+                <defs>
+                  <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" id="skyTop" stop-color="#cfe6f7"/>
+                    <stop offset="100%" id="skyBottom" stop-color="#f7f0e3"/>
+                  </linearGradient>
+                  <radialGradient id="sunGlow"><stop offset="0%" stop-color="#ffc83d" stop-opacity=".85"/><stop offset="100%" stop-color="#ffc83d" stop-opacity="0"/></radialGradient>
+                  <pattern id="hatch" width="5" height="5" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+                    <line x1="0" y1="0" x2="0" y2="5" stroke="#0b2c1f" stroke-width="2.4" opacity=".28"/>
+                  </pattern>
+                </defs>
+                <path id="domeSky" d="M 40 178 A 140 140 0 0 1 320 178 Z" fill="url(#skyGrad)"/>
+                <g id="domeTicks" class="dome-ticks"></g>
+                <path id="domeArc" d="M 40 178 A 140 140 0 0 1 320 178" class="dome-arc"/>
+                <path id="aoiWedge" class="aoi-wedge" d=""/>
+                <line id="normalRay" class="normal-ray" x1="180" y1="178" x2="180" y2="48"/>
+                <line id="sunRay" class="sun-ray" x1="180" y1="178" x2="180" y2="48"/>
+                <g id="sunMark"><circle id="sunGlowC" r="28" fill="url(#sunGlow)"/><circle id="sunDisc" r="9" class="sun-disc"/></g>
+                <g id="targetPanel" class="ghost-panel"><rect x="-33" y="-2" width="66" height="4" rx="2"/></g>
+                <g id="panelGroup">
+                  <rect x="-38" y="-3.5" width="76" height="7" rx="2" class="panel-face"/>
+                  <rect x="-38" y="-3.5" width="76" height="7" rx="2" fill="url(#hatch)"/>
+                </g>
+                <line x1="22" y1="178" x2="338" y2="178" class="ground-line"/>
+                <rect x="177" y="178" width="6" height="20" rx="2" class="mast"/>
+                <text x="40" y="196" class="dome-lbl" text-anchor="middle">Est</text>
+                <text x="320" y="196" class="dome-lbl" text-anchor="middle">Ouest</text>
+                <text x="180" y="26" class="dome-lbl" text-anchor="middle">Zénith</text>
+              </svg>
+            </div>
+
+            <div class="readouts">
+              <div class="ro ro--hero">
+                <span>Prédiction</span><b id="roTilt"><span class="ph">&mdash;</span><i>°</i></b><em id="roTiltSub">± —</em>
+              </div>
+              <div class="ro">
+                <span>Formule simple</span><b id="roSimple"><span class="ph">&mdash;</span><i>°</i></b><em>90° − élévation</em>
+              </div>
+              <div class="ro">
+                <span>Optimum physique</span><b id="roOpt"><span class="ph">&mdash;</span><i>°</i></b><em id="roOptSub">vérité terrain</em>
+              </div>
+              <div class="ro">
+                <span>Énergie perdue</span><b id="roLoss"><span class="ph">&mdash;</span><i>%</i></b><em id="roLossSub">loi du cosinus</em>
+              </div>
+            </div>
+
+            <div class="conf-row">
+              <div class="conf-bar" id="confBar" aria-hidden="true"><i></i></div>
+              <span class="conf-lbl" id="confLbl">confiance du modèle : —</span>
+            </div>
+          </section>
+
+          <!-- Entrees du modele -->
+          <section class="card" id="sec-inputs">
+            <header class="card-head">
+              <div><h2>Entrées du modèle</h2><p class="card-sub">Les cinq variables lues par le modèle</p></div>
+            </header>
+
+            <div class="io-strip">
+              <span class="io-box"><b>5</b>entrées</span>
+              <svg class="io-arrow" viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6"/></svg>
+              <span class="io-box io-box--mid"><b id="ioModel">modèle</b>correction apprise</span>
+              <svg class="io-arrow" viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6"/></svg>
+              <span class="io-box io-box--out"><b id="ioOut"><span class="ph">&mdash;</span></b>angle</span>
+            </div>
+
+            <div class="feat-list" id="featList"></div>
+
+            <div class="uv-verdict" id="inputsVerdict">
+              <svg class="ic" viewBox="0 0 24 24"><use href="#i-check"/></svg>
+              <span>En attente de données.</span>
+            </div>
+          </section>
+
+          <!-- Dernier evenement -->
+          <section class="card" id="sec-last">
+            <header class="card-head">
+              <div><h2>Derniers évènements</h2><p class="card-sub">Journal complet sur sa propre page</p></div>
+              <a class="pill pill--btn" href="journal.html">Ouvrir le journal</a>
+            </header>
+            <ul class="log" id="lastLog"><li class="log-empty">Aucun évènement pour l’instant.</li></ul>
+          </section>
+
+        </div>
+      </div>
+
+      <footer class="page-foot">
+        <span>SolarNav &mdash; orientation solaire prédictive</span>
+        <span>Un projet GOMYCODE &times; NVIDIA</span>
+      </footer>
+    </main>
+  </div>
+</div>
+
+<script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

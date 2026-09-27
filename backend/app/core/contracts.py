@@ -106,7 +106,8 @@ class OptimizationResult(FrozenModel):
 
 
 class Decision(FrozenModel):
-    # STOW: safety position; target_tilt_deg = stow tilt (flat for wind, steep for hail), azimuth kept.
+    # STOW: safety position; target_tilt_deg = stow tilt (flat for wind, steep for hail),
+    # target_azimuth_deg = requested stow azimuth.
     action: Literal["MOVE", "HOLD", "STOW"]
     target_tilt_deg: float = Field(ge=0.0, le=90.0)
     target_azimuth_deg: float = Field(ge=0.0, lt=360.0)
@@ -126,16 +127,13 @@ class CycleResult(FrozenModel):
 class SimulationStepRequest(FrozenModel):
     step_minutes: float | None = Field(default=None, gt=0.0, le=180.0)
 
-
-    
-
-class WeatherForecastMetrics(BaseModel):
+class WeatherForecastMetrics(FrozenModel):
     avg_cloud_pct: float | None = None
     total_rain_mm: float | None = None
     max_wind_kmh: float | None = None
     expected_radiation_w_m2: float | None = None
 
-class WeatherStrategyResponse(BaseModel):
+class WeatherStrategyResponse(FrozenModel):
     data_origin: Literal["live", "unavailable"]
     status: str
     action_plan: str

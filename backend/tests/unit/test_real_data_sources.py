@@ -12,8 +12,8 @@ import pytest
 
 from backend.app.core.contracts import RawInput
 from backend.app.modules.data_twin import satellite_source
-from backend.app.modules.data_twin.ephemeris import _skyfield, position_from_tle, sun_from_moon_series
-from backend.app.modules.data_twin.live_source import lunar_raw_input, lunar_raw_input_range
+from backend.app.modules.data_twin.ephemeris import SunPosition, _skyfield, position_from_tle, sun_from_moon_series
+from backend.app.modules.data_twin.live_source import lunar_raw_input, lunar_raw_input_range, lunar_raw_input_series
 from backend.app.modules.data_twin.pipeline import build_twin_state
 
 WHEN = datetime(2026, 9, 27, 12, 0, tzinfo=timezone.utc)
@@ -83,6 +83,35 @@ def test_lunar_series_accumulates_dust():
 def test_lunar_series_rejects_invalid_range():
     with pytest.raises(ValueError):
         lunar_raw_input_range(WHEN, days=0)
+
+
+def test_lunar_range_covers_partial_final_interval(monkeypatch):
+    seen = {}
+
+    def fake_series(timestamps, **kwargs):
+        seen["timestamps"] = timestamps
+        return []
+
+    monkeypatch.setattr("backend.app.modules.data_twin.live_source.lunar_raw_input_series", fake_series)
+    lunar_raw_input_range(WHEN, days=1, step_minutes=100)
+    assert len(seen["timestamps"]) == 15
+    assert seen["timestamps"][-1] == WHEN + timedelta(minutes=14 * 100)
+
+
+def test_lunar_series_accepts_empty_timestamps():
+    assert lunar_raw_input_series([]) == []
+
+
+def test_lunar_series_uses_earliest_timestamp_for_dust(monkeypatch):
+    suns = [
+        SunPosition(timestamp=WHEN + timedelta(days=1), azimuth_deg=10.0, elevation_deg=5.0),
+        SunPosition(timestamp=WHEN, azimuth_deg=20.0, elevation_deg=6.0),
+    ]
+    monkeypatch.setattr("backend.app.modules.data_twin.live_source.sun_from_moon_series", lambda *args, **kwargs: suns)
+    series = lunar_raw_input_series([WHEN + timedelta(days=1), WHEN], days_since_cleaning=2.0)
+    assert [item.timestamp for item in series] == [WHEN + timedelta(days=1), WHEN]
+    assert all(0.0 <= item.dust_factor <= 1.0 for item in series)
+    assert series[0].dust_factor < series[1].dust_factor
 
 
 @requires_ephemeris

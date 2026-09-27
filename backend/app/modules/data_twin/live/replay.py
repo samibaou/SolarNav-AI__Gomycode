@@ -71,7 +71,8 @@ class NasaPowerReplay:
         """Record for today's local solar hour, on day (day-of-year mod file length) of the file."""
         hours = len(self.records)
         days = max(1, math.ceil(hours / 24))
-        t = (now.timetuple().tm_yday % days) * 24 + local_solar_hour(now, self.lon_deg)
+        day_index = (now.timetuple().tm_yday - 1) % days
+        t = day_index * 24 + local_solar_hour(now, self.lon_deg)
         i0 = int(t) % hours
         i1, frac = (i0 + 1) % hours, t - int(t)
 
@@ -81,8 +82,12 @@ class NasaPowerReplay:
                 return a if a is not None else b if b is not None else default
             return a + (b - a) * frac
 
-        record = self.records[i0]
-        observed = (record.lst - timedelta(hours=self.lon_deg / 15.0)).replace(tzinfo=timezone.utc)
+        lower = self.records[i0].lst
+        upper = self.records[i1].lst
+        if upper <= lower:
+            upper += timedelta(hours=hours)
+        observed_lst = lower + (upper - lower) * frac
+        observed = (observed_lst - timedelta(hours=self.lon_deg / 15.0)).replace(tzinfo=timezone.utc)
         return ReplayWeather(
             ghi_w_m2=max(0.0, lerp("ghi", 0.0)),
             ghi_clear_w_m2=lerp("ghi_clear", None),

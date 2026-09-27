@@ -187,7 +187,7 @@ def parse_swpc_xrays(payload: Any, now: datetime) -> tuple[dict[str, float], dat
     long_band = [r for r in payload if r.get("energy") == "0.1-0.8nm" and isinstance(r.get("flux"), (int, float))]
     if not long_band:
         raise ValueError("SWPC X-rays: no 0.1-0.8nm flux")
-    latest = max(long_band, key=lambda r: r["time_tag"])
+    latest = max(long_band, key=lambda r: _utc(r["time_tag"]))
     return {"flux_w_m2": float(latest["flux"])}, _utc(latest["time_tag"])
 
 
@@ -195,7 +195,7 @@ def _latest_active(payload: Any, field: str, name: str) -> dict[str, Any]:
     rows = [r for r in payload if r.get("active") and isinstance(r.get(field), (int, float))]
     if not rows:
         raise ValueError(f"SWPC {name}: no active record")
-    return max(rows, key=lambda r: r["time_tag"])
+    return max(rows, key=lambda r: _utc(r["time_tag"]))
 
 
 def parse_swpc_wind(payload: Any, now: datetime) -> tuple[dict[str, float | None], datetime]:

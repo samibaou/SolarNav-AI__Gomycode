@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -62,8 +63,10 @@ def lunar_raw_input_series(
 
     Dust keeps accumulating along the series, starting from `days_since_cleaning`.
     """
+    if not timestamps:
+        return []
     suns = sun_from_moon_series(timestamps, lat_deg, lon_deg)
-    start = suns[0].timestamp
+    start = min(sun.timestamp for sun in suns)
     inputs = []
     for sun in suns:
         elapsed_days = (sun.timestamp - start).total_seconds() / 86400.0
@@ -94,7 +97,7 @@ def lunar_raw_input_range(
     if days <= 0 or step_minutes <= 0:
         raise ValueError("days and step_minutes must be > 0")
     start = to_utc(start)
-    count = int(days * 1440 / step_minutes)
+    count = math.ceil(days * 1440 / step_minutes)
     timestamps = [start + timedelta(minutes=i * step_minutes) for i in range(count)]
     return lunar_raw_input_series(timestamps, **kwargs)
 

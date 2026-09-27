@@ -5,7 +5,9 @@ import httpx
 import pytest
 
 from backend.app.core.config import ROOT_DIR
+from backend.app.modules.data_twin.live.replay import NasaPowerReplay, ReplayRecord
 from backend.app.modules.data_twin.live import sources
+from backend.app.modules.data_twin.live.sources import parse_swpc_wind, parse_swpc_xrays
 from backend.app.modules.data_twin.live.service import LiveDataService
 
 NOW = datetime(2026, 9, 27, 13, 57, tzinfo=timezone.utc)
@@ -89,6 +91,7 @@ def test_earth_live_uses_open_meteo_and_marks_every_source():
     assert 0 <= data.sun.azimuth_deg < 360 and data.sun.elevation_deg > 40   # early afternoon in Ouarzazate
     sw = data.space_weather
     assert sw.level == "none" and sw.risk_flags == () and sw.recommended_action is None
+    assert sw.validation_gate == "auto"
     assert sw.xray_class == "B6.9" and sw.solar_wind_speed_km_s == 396.3 and sw.imf_bz_nt == -2.07
     assert {m.status for m in sw.sources} == {"live"}
     # Open-Meteo request asks for SI wind and the three irradiance components.
@@ -161,6 +164,74 @@ def test_no_cache_falls_back_to_nasa_power_replay_then_simulation():
     assert simulated.ghi_w_m2 > 0
 
 
+def test_replay_uses_zero_based_day_of_year_mapping():
+    replay = NasaPowerReplay(
+        [
+            ReplayRecord(
+                datetime(2024, 1, 1, hour),
+                100.0 + hour,
+                None,
+                20.0,
+                1.0,
+            )
+            for hour in range(24)
+        ]
+        + [
+            ReplayRecord(
+                datetime(2024, 1, 2, hour),
+                200.0 + hour,
+                None,
+                20.0,
+                1.0,
+            )
+            for hour in range(24)
+        ],
+        lon_deg=0.0,
+        label="test replay",
+    )
+    weather = replay.at(datetime(2026, 1, 2, 0, 0, tzinfo=timezone.utc))
+    assert weather.ghi_w_m2 == 200.0
+
+
+def test_replay_observed_at_tracks_interpolated_time():
+    replay = NasaPowerReplay(
+        [
+            ReplayRecord(datetime(2024, 1, 1, 0), 100.0, None, 20.0, 1.0),
+            ReplayRecord(datetime(2024, 1, 1, 1), 200.0, None, 20.0, 1.0),
+        ],
+        lon_deg=0.0,
+        label="test replay",
+    )
+    weather = replay.at(datetime(2026, 1, 1, 0, 30, tzinfo=timezone.utc))
+    assert weather.ghi_w_m2 == 150.0
+    assert weather.observed_at == datetime(2024, 1, 1, 0, 30, tzinfo=timezone.utc)
+
+
+def test_swpc_xrays_chooses_latest_sample_by_parsed_timestamp():
+    value, observed_at = parse_swpc_xrays(
+        [
+            {"time_tag": "2026-09-27T14:00:00+01:00", "flux": 5.0e-7, "energy": "0.1-0.8nm"},
+            {"time_tag": "2026-09-27T13:30:00Z", "flux": 6.0e-7, "energy": "0.1-0.8nm"},
+        ],
+        NOW,
+    )
+    assert value["flux_w_m2"] == pytest.approx(6.0e-7)
+    assert observed_at == datetime(2026, 9, 27, 13, 30, tzinfo=timezone.utc)
+
+
+def test_swpc_wind_chooses_latest_active_sample_by_parsed_timestamp():
+    value, observed_at = parse_swpc_wind(
+        [
+            {"time_tag": "2026-09-27T14:00:00+01:00", "active": True, "proton_speed": 500.0},
+            {"time_tag": "2026-09-27T13:40:00Z", "active": True, "proton_speed": 550.0, "proton_density": 1.2},
+        ],
+        NOW,
+    )
+    assert value["speed_km_s"] == pytest.approx(550.0)
+    assert value["density_cm3"] == pytest.approx(1.2)
+    assert observed_at == datetime(2026, 9, 27, 13, 40, tzinfo=timezone.utc)
+
+
 def test_stale_cache_expires_into_fallback():
     apis, clock = FakeApis(), FakeClock()
     service = make_service(apis, clock)
@@ -216,6 +287,7 @@ def test_moderate_space_weather_does_not_stow():
     apis = FakeApis(SWPC_WIND_URL=[{"time_tag": "2026-09-27T13:50:00", "active": True, "proton_speed": 650.0}])
     sw = make_service(apis).snapshot("earth").space_weather
     assert sw.level == "moderate" and sw.recommended_action is None and sw.risk_flags == ()
+    assert sw.validation_gate == "auto"
 
 
 def test_old_events_outside_24h_are_ignored():
