@@ -8,7 +8,5 @@ htmlcov/
 .env
 models/*.joblib
 data/processed/
-# Éphémérides Skyfield (téléchargées automatiquement)
-data/cache/*.bsp
 node_modules/
 .DS_Store

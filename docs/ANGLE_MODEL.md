@@ -7,8 +7,8 @@ par IA, à partir de la position réelle du soleil.
 
 | Rôle | Fichier |
 |---|---|
-| Position réelle d'un satellite et orbite (TLE) via l'API N2YO | `backend/app/modules/data_twin/satellite.py` |
-| Élévation, azimut du soleil et éclairage avec Skyfield | `backend/app/modules/data_twin/sun.py` |
+| Position réelle d'un satellite et orbite (TLE) via l'API N2YO (P1) | `backend/app/modules/data_twin/satellite_source.py` |
+| Élévation, azimut du soleil et éclairage avec Skyfield (P1) | `backend/app/modules/data_twin/ephemeris.py` |
 | Formule physique : puissance du panneau, angle optimal, énergie récupérée | `backend/app/modules/intelligence/angle_physics.py` |
 | Dataset de 40 000 scénarios (orbites ISS, Hubble, NOAA-19 + scénarios aléatoires : GEO, Lune, soleil au zénith) | `backend/app/modules/intelligence/angle_dataset.py` |
 | Modèle hybride (formule physique + ExtraTrees qui apprend la correction) | `backend/app/modules/intelligence/angle_model.py` |
@@ -20,8 +20,8 @@ Fichiers générés / cache :
 
 | Fichier | Contenu | Git |
 |---|---|---|
-| `data/cache/tle_cache.json` | dernières orbites connues (mode hors ligne) | suivi |
-| `data/cache/de421.bsp` | éphémérides Skyfield (17 Mo, téléchargées au 1er lancement) | ignoré |
+| `data/tle_cache.json` | dernières orbites connues (mode hors ligne) | suivi |
+| `data/ephemeris/` | éphémérides NASA/JPL (~19 Mo, téléchargées au 1er lancement) | ignoré |
 | `data/processed/angle_training_data.csv` | dataset d'entraînement | ignoré |
 | `models/angle_model.joblib` | modèle entraîné | ignoré |
 
@@ -36,7 +36,7 @@ python scripts/validate_angle_model.py     # doit finir par « 18/18 vérificati
 ```
 
 Sans clé N2YO ni internet, tout fonctionne quand même grâce aux orbites en cache
-(`data/cache/tle_cache.json`).
+(`data/tle_cache.json`).
 
 Tester une prédiction dans le terminal :
 
@@ -62,15 +62,16 @@ et le test des cibles mélangées fait tomber le R² à 0 (pas de fuite de donn�
 ## Utilisation depuis le backend
 
 ```python
-from backend.app.modules.data_twin.satellite import get_sat_position
-from backend.app.modules.data_twin.sun import get_real_sun_angle
+from backend.app.modules.data_twin.ephemeris import sun_from_earth_orbit
+from backend.app.modules.data_twin.satellite_source import get_satellite_position
 from backend.app.modules.intelligence.angle_physics import simulate_surface_temp
 from backend.app.modules.intelligence.angle_predictor import predict_with_confidence
 
-lat, lon, alt = get_sat_position(25544)                        # 1. position (N2YO)
-elevation, azimuth, sunlit = get_real_sun_angle(lat, lon, alt) # 2. soleil (Skyfield)
-temp = float(simulate_surface_temp(elevation, sunlit))         # 3. température estimée
-result = predict_with_confidence(elevation, azimuth, sunlit, dust_level=30, surface_temp=temp)
+position = get_satellite_position(25544)                     # 1. position (N2YO)
+sun = sun_from_earth_orbit(position)                         # 2. soleil (Skyfield)
+temp = float(simulate_surface_temp(sun.elevation_deg, sun.sunlit))  # 3. température estimée
+result = predict_with_confidence(sun.elevation_deg, sun.azimuth_deg, sun.sunlit,
+                                 dust_level=30, surface_temp=temp)
 # result = {"angle": 52.3, "uncertainty": 0.4, "confident": True}
 ```
 
@@ -78,17 +79,17 @@ result = predict_with_confidence(elevation, azimuth, sunlit, dust_level=30, surf
 
 | Fonction | Entrées | Renvoie |
 |---|---|---|
-| `get_sat_position(norad_id)` | ID NORAD (25544 = ISS, 20580 = Hubble, 33591 = NOAA-19) | `(lat°, lon°, altitude_km)` |
-| `get_real_sun_angle(lat, lon, alt)` | position du satellite | `(elevation°, azimuth°, is_sunlit)` |
+| `get_satellite_position(norad_id)` | ID NORAD (25544 = ISS, 20580 = Hubble, 33591 = NOAA-19) | `GeoPosition(lat_deg, lon_deg, alt_km)` |
+| `sun_from_earth_orbit(position)` | position du satellite | `SunPosition(azimuth_deg, elevation_deg, sunlit)` |
 | `simulate_surface_temp(elevation, is_sunlit)` | soleil | température de surface estimée (°C) |
 | `predict_optimal_angle(elevation, azimuth, is_sunlit, dust_level, surface_temp)` | les 5 entrées | angle optimal (°) : 0 = à plat, 90 = vertical |
 | `predict_with_confidence(...)` | mêmes entrées | `{"angle", "uncertainty" (± °), "confident" (bool)}` |
-| `get_orbit_sun_angles(get_sat_tle(norad_id), n_points=90)` | orbite, 1 point/minute | DataFrame : `sat_lat, sat_lon, sat_alt, sun_elevation, sun_azimuth, is_sunlit` |
+| `orbit_sun_series(get_satellite_tle(norad_id), n_points=90)` | orbite, 1 point/minute | tableaux : `sat_lat, sat_lon, sat_alt, sun_elevation, sun_azimuth, is_sunlit` |
 | `compute_optimal_angle(...)` / `panel_power(tilt, ...)` | formule physique | angle de référence / puissance relative (0-1) |
 
 ### Bon à savoir
 
-- **Quota N2YO** : ~1000 requêtes/heure en gratuit. `get_sat_position` réutilise la même
+- **Quota N2YO** : ~1000 requêtes/heure en gratuit. `get_satellite_position` réutilise la même
   position pendant 10 s.
 - **N2YO hors ligne** : la position est calculée depuis l'orbite en cache
   (écart < 0,1° avec la vraie position).

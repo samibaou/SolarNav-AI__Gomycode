@@ -139,19 +139,20 @@ def test_leakage() -> None:
 def test_live() -> None:
     print("\n5. Cas réel : ISS maintenant")
     try:
-        from backend.app.modules.data_twin.satellite import get_sat_position
-        from backend.app.modules.data_twin.sun import get_real_sun_angle
+        from backend.app.modules.data_twin.ephemeris import sun_from_earth_orbit
+        from backend.app.modules.data_twin.satellite_source import get_satellite_position
 
-        lat, lon, alt = get_sat_position(25544)
+        position = get_satellite_position(25544)
     except Exception as exc:
         print(f"  Ignoré, N2YO injoignable ({exc})")
         return
 
-    elevation, azimuth, sunlit = get_real_sun_angle(lat, lon, alt)
+    sun = sun_from_earth_orbit(position)
+    elevation, azimuth, sunlit = sun.elevation_deg, sun.azimuth_deg, sun.sunlit
     temp = float(simulate_surface_temp(elevation, sunlit))
     angle = predict_optimal_angle(elevation, azimuth, sunlit, 30, temp)
     expected = compute_optimal_angle(elevation, sunlit, 30, temp)[0]
-    print(f"  Position : {lat:.2f}°, {lon:.2f}°, {alt:.0f} km")
+    print(f"  Position : {position.lat_deg:.2f}°, {position.lon_deg:.2f}°, {position.alt_km:.0f} km")
     print(f"  Soleil : élévation {elevation:.1f}°, azimut {azimuth:.1f}°, "
           f"{'éclairé' if sunlit else 'dans l ombre'}, surface {temp:.0f} °C")
     check("Prédiction proche de la formule", abs(angle - expected) < 3,

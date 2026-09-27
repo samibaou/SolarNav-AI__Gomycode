@@ -102,6 +102,34 @@ def sun_from_earth_orbit(position: GeoPosition, when: datetime | None = None) ->
     return SunPosition(when, float(az.degrees), float(alt.degrees), bool(location.at(t).is_sunlit(eph)))
 
 
+def orbit_sun_series(
+    tle: tuple[str, str, str],
+    n_points: int,
+    step_minutes: float = 1.0,
+    start: datetime | None = None,
+) -> dict[str, np.ndarray]:
+    """Propagate a TLE over n_points (one every step_minutes) and compute the sun seen from it.
+
+    Vectorized (one Skyfield call). Returns arrays: sat_lat, sat_lon, sat_alt (km),
+    sun_elevation, sun_azimuth (deg), is_sunlit. A TLE stays accurate for a few days:
+    keep n_points * step_minutes reasonable.
+    """
+    ts, eph, _, _ = _skyfield()
+    name, line1, line2 = tle
+    t = ts.from_datetime(to_utc(start)) + np.arange(n_points) * step_minutes / 1440.0
+    geocentric = EarthSatellite(line1, line2, name, ts).at(t)
+    location = wgs84.geographic_position_of(geocentric)
+    alt, az, _ = (eph["earth"] + location).at(t).observe(eph["sun"]).apparent().altaz()
+    return {
+        "sat_lat": location.latitude.degrees,
+        "sat_lon": location.longitude.degrees,
+        "sat_alt": location.elevation.km,
+        "sun_elevation": alt.degrees,
+        "sun_azimuth": az.degrees,
+        "is_sunlit": geocentric.is_sunlit(eph),
+    }
+
+
 def position_from_tle(tle: tuple[str, str, str], when: datetime | None = None) -> GeoPosition:
     """Propagate a TLE (name, line1, line2) to `when` and return the sub-satellite position."""
     ts, _, _, _ = _skyfield()

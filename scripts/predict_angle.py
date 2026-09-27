@@ -12,18 +12,20 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from backend.app.modules.data_twin.satellite import get_sat_position
-from backend.app.modules.data_twin.sun import get_real_sun_angle
+from backend.app.modules.data_twin.ephemeris import sun_from_earth_orbit
+from backend.app.modules.data_twin.satellite_source import get_satellite_position
 from backend.app.modules.intelligence.angle_physics import compute_optimal_angle, simulate_surface_temp
 from backend.app.modules.intelligence.angle_predictor import predict_with_confidence
 
 
 def _live_inputs(norad_id: int) -> tuple[float, float, bool, float]:
     """Position réelle du satellite (N2YO) -> soleil (Skyfield) -> température estimée."""
-    lat, lon, alt = get_sat_position(norad_id)
-    elevation, azimuth, sunlit = get_real_sun_angle(lat, lon, alt)
+    position = get_satellite_position(norad_id)
+    sun = sun_from_earth_orbit(position)
+    elevation, azimuth, sunlit = sun.elevation_deg, sun.azimuth_deg, sun.sunlit
     temp = float(simulate_surface_temp(elevation, sunlit))
-    print(f"Satellite {norad_id} : lat {lat:.2f}°, lon {lon:.2f}°, altitude {alt:.0f} km")
+    print(f"Satellite {norad_id} : lat {position.lat_deg:.2f}°, lon {position.lon_deg:.2f}°, "
+          f"altitude {position.alt_km:.0f} km")
     print(f"Soleil : élévation {elevation:.1f}°, azimut {azimuth:.1f}°, "
           f"{'éclairé' if sunlit else 'dans l ombre'}, surface estimée {temp:.0f} °C")
     return elevation, azimuth, sunlit, temp

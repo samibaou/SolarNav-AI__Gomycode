@@ -101,5 +101,5 @@ python scripts/validate_angle_model.py
 python scripts/predict_angle.py --live 25544 --dust 30
 ```
 
-Requires `N2YO_API_KEY` in `.env` (works offline with `data/cache/tle_cache.json`).
+Requires `N2YO_API_KEY` in `.env` (works offline with `data/tle_cache.json`).
 Details (in French): [`docs/ANGLE_MODEL.md`](docs/ANGLE_MODEL.md).

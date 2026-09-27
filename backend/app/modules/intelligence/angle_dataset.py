@@ -60,11 +60,11 @@ def _random_geometry(n_samples, rng):
 
 def _orbit_geometry(n_samples, norad_ids):
     """Géométrie soleil réelle : orbites (TLE N2YO) propagées avec Skyfield, 1 point / minute."""
-    from backend.app.modules.data_twin.satellite import get_sat_tle
-    from backend.app.modules.data_twin.sun import get_orbit_sun_angles
+    from backend.app.modules.data_twin.ephemeris import orbit_sun_series
+    from backend.app.modules.data_twin.satellite_source import get_satellite_tle
 
     per_sat = -(-n_samples // len(norad_ids))  # division arrondie au supérieur
-    frames = [get_orbit_sun_angles(get_sat_tle(nid), n_points=per_sat) for nid in norad_ids]
+    frames = [pd.DataFrame(orbit_sun_series(get_satellite_tle(nid), n_points=per_sat)) for nid in norad_ids]
     return pd.concat(frames, ignore_index=True).head(n_samples)
 
 
