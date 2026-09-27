@@ -7,6 +7,7 @@ import pytest
 from backend.app.core.config import ROOT_DIR
 from backend.app.modules.data_twin.live.replay import NasaPowerReplay, ReplayRecord
 from backend.app.modules.data_twin.live import sources
+from backend.app.modules.data_twin.live.sources import parse_swpc_wind, parse_swpc_xrays
 from backend.app.modules.data_twin.live.service import LiveDataService
 
 NOW = datetime(2026, 9, 27, 13, 57, tzinfo=timezone.utc)
@@ -189,6 +190,31 @@ def test_replay_uses_zero_based_day_of_year_mapping():
     )
     weather = replay.at(datetime(2026, 1, 2, 0, 0, tzinfo=timezone.utc))
     assert weather.ghi_w_m2 == 200.0
+
+
+def test_swpc_xrays_chooses_latest_sample_by_parsed_timestamp():
+    value, observed_at = parse_swpc_xrays(
+        [
+            {"time_tag": "2026-09-27T14:00:00+01:00", "flux": 5.0e-7, "energy": "0.1-0.8nm"},
+            {"time_tag": "2026-09-27T13:30:00Z", "flux": 6.0e-7, "energy": "0.1-0.8nm"},
+        ],
+        NOW,
+    )
+    assert value["flux_w_m2"] == pytest.approx(6.0e-7)
+    assert observed_at == datetime(2026, 9, 27, 13, 30, tzinfo=timezone.utc)
+
+
+def test_swpc_wind_chooses_latest_active_sample_by_parsed_timestamp():
+    value, observed_at = parse_swpc_wind(
+        [
+            {"time_tag": "2026-09-27T14:00:00+01:00", "active": True, "proton_speed": 500.0},
+            {"time_tag": "2026-09-27T13:40:00Z", "active": True, "proton_speed": 550.0, "proton_density": 1.2},
+        ],
+        NOW,
+    )
+    assert value["speed_km_s"] == pytest.approx(550.0)
+    assert value["density_cm3"] == pytest.approx(1.2)
+    assert observed_at == datetime(2026, 9, 27, 13, 40, tzinfo=timezone.utc)
 
 
 def test_stale_cache_expires_into_fallback():
