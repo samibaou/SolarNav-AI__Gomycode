@@ -28,8 +28,13 @@ class WeatherForecasterService:
             df["time"] = pd.to_datetime(df["time"], errors="coerce")
             if df["time"].isna().all():
                 raise ValueError("Open-Meteo hourly timestamps unavailable")
-            first_day = df["time"].dropna().min().normalize()
-            tomorrow = first_day + pd.Timedelta(days=1)
+            valid_times = df["time"].dropna()
+            today = pd.Timestamp.now().normalize()
+            first_day = valid_times.min().normalize()
+            last_day = valid_times.max().normalize()
+            if today < first_day or today > last_day:
+                today = first_day
+            tomorrow = today + pd.Timedelta(days=1)
             day_after = tomorrow + pd.Timedelta(days=1)
             df = df[(df["time"] >= tomorrow) & (df["time"] < day_after)]
             if df.empty:
