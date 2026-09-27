@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "SolarNav: Run API + Frontend",
+      "type": "shell",
+      "command": "uvicorn backend.app.main:app --reload",
+      "problemMatcher": []
+    },
+    {
+      "label": "SolarNav: Backend tests",
+      "type": "shell",
+      "command": "pytest backend/tests -q",
+      "problemMatcher": []
+    },
+    {
+      "label": "SolarNav: Architecture check",
+      "type": "shell",
+      "command": "python scripts/architecture_check.py",
+      "problemMatcher": []
+    }
+  ]
+}

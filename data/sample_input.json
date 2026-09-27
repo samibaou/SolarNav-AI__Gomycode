@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-09-27T12:00:00Z",
+  "sun_azimuth_deg": 142.0,
+  "sun_elevation_deg": 4.8,
+  "panel_azimuth_deg": 120.0,
+  "panel_tilt_deg": 32.0,
+  "battery_soc_pct": 41.0,
+  "illumination": 0.88,
+  "shadow_probability": 0.15,
+  "dust_factor": 0.95,
+  "observed_power_w": 400.0
+}

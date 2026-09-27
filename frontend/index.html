@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SolarNav AI — Jumeau Numérique</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div>
+      <p class="eyebrow">GOMYCODE HACKATHON</p>
+      <h1>SolarNav AI</h1>
+      <p class="subtitle">Digital Twin · Solar Optimization · AI Agent</p>
+    </div>
+    <div id="api-status" class="status">API…</div>
+  </header>
+
+  <main>
+    <section class="grid kpis">
+      <article class="card"><span>Battery SOC</span><strong id="battery">--</strong></article>
+      <article class="card"><span>Observed power</span><strong id="power">--</strong></article>
+      <article class="card"><span>Panel tilt</span><strong id="tilt">--</strong></article>
+      <article class="card"><span>Panel azimuth</span><strong id="azimuth">--</strong></article>
+    </section>
+
+    <section class="main-grid">
+      <article class="card twin-card">
+        <div class="card-head">
+          <div><span>Digital Twin</span><h2>Sun & panel orientation</h2></div>
+          <button id="refresh-btn">Refresh</button>
+        </div>
+        <div id="twin-stage" class="twin-stage"></div>
+      </article>
+
+      <article class="card decision-card">
+        <span>AI recommendation</span>
+        <h2 id="decision-action">--</h2>
+        <dl>
+          <div><dt>Target tilt</dt><dd id="target-tilt">--</dd></div>
+          <div><dt>Target azimuth</dt><dd id="target-azimuth">--</dd></div>
+          <div><dt>Net gain</dt><dd id="net-gain">--</dd></div>
+          <div><dt>Diagnostic</dt><dd id="diagnostic">--</dd></div>
+        </dl>
+        <p id="reason" class="reason">Run one cycle to get a recommendation.</p>
+        <button id="cycle-btn" class="primary">Run optimization cycle</button>
+      </article>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><div><span>Scenario</span><h2>Input state</h2></div></div>
+      <form id="scenario-form" class="scenario-grid">
+        <label>Sun azimuth <input id="in-sun-az" type="number" step="0.1"></label>
+        <label>Sun elevation <input id="in-sun-el" type="number" step="0.1"></label>
+        <label>Panel azimuth <input id="in-panel-az" type="number" step="0.1"></label>
+        <label>Panel tilt <input id="in-panel-tilt" type="number" step="0.1"></label>
+        <label>Battery SOC <input id="in-battery" type="number" min="0" max="100" step="0.1"></label>
+        <label>Illumination <input id="in-illumination" type="number" min="0" max="1" step="0.01"></label>
+        <label>Shadow probability <input id="in-shadow" type="number" min="0" max="1" step="0.01"></label>
+        <label>Dust factor <input id="in-dust" type="number" min="0" max="1" step="0.01"></label>
+        <button class="primary" type="submit">Apply scenario</button>
+      </form>
+    </section>
+  </main>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
