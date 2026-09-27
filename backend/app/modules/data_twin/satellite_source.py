@@ -12,7 +12,7 @@ import json
 import os
 import time
 from pathlib import Path
-from threading import RLock
+from threading import Lock
 
 import httpx
 
@@ -27,7 +27,7 @@ TLE_CACHE_PATH = ROOT_DIR / "data" / "tle_cache.json"
 ISS_NORAD_ID = 25544
 
 _position_cache: dict[int, tuple[float, GeoPosition]] = {}
-_tle_cache_lock = RLock()
+_tle_cache_lock = Lock()
 
 
 class N2YOError(RuntimeError):
@@ -59,12 +59,23 @@ def _n2yo_get(path: str) -> dict:
     return payload
 
 
+def _read_tle_cache_unlocked(path: Path) -> dict:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+
 def _read_tle_cache(path: Path) -> dict:
     with _tle_cache_lock:
-        try:
-            return json.loads(path.read_text(encoding="utf-8"))
-        except (FileNotFoundError, json.JSONDecodeError):
-            return {}
+        return _read_tle_cache_unlocked(path)
+
+
+def _write_tle_cache_unlocked(path: Path, cache: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = path.with_name(f"{path.name}.tmp")
+    tmp_path.write_text(json.dumps(cache, indent=2), encoding="utf-8")
+    tmp_path.replace(path)
 
 
 def get_satellite_tle(norad_id: int, cache_path: Path = TLE_CACHE_PATH) -> tuple[str, str, str]:
@@ -82,9 +93,9 @@ def get_satellite_tle(norad_id: int, cache_path: Path = TLE_CACHE_PATH) -> tuple
         return tuple(cache[str(norad_id)])
 
     with _tle_cache_lock:
-        cache = _read_tle_cache(cache_path)
+        cache = _read_tle_cache_unlocked(cache_path)
         cache[str(norad_id)] = tle
-        cache_path.write_text(json.dumps(cache, indent=2), encoding="utf-8")
+        _write_tle_cache_unlocked(cache_path, cache)
     return tuple(tle)
 
 

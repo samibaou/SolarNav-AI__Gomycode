@@ -65,7 +65,7 @@ def lunar_raw_input_series(
     if not timestamps:
         return []
     suns = sun_from_moon_series(timestamps, lat_deg, lon_deg)
-    start = suns[0].timestamp
+    start = min(sun.timestamp for sun in suns)
     inputs = []
     for sun in suns:
         elapsed_days = (sun.timestamp - start).total_seconds() / 86400.0
