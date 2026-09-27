@@ -270,11 +270,21 @@ async def health() -> JSONResponse:
 app.mount("/assets", StaticFiles(directory=ROOT / "assets"), name="assets")
 if (ROOT / "data").exists():
     app.mount("/data", StaticFiles(directory=ROOT / "data"), name="data")
+app.mount(
+    "/digital_twin",
+    StaticFiles(directory=ROOT.parent / "digital_twin", html=True),
+    name="digital-twin",
+)
 
 
 @app.get("/")
 async def index() -> FileResponse:
     return FileResponse(ROOT / "index.html")
+
+
+@app.get("/journal.html")
+async def journal() -> FileResponse:
+    return FileResponse(ROOT / "journal.html")
 
 
 if __name__ == "__main__":
