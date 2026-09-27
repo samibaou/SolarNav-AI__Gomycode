@@ -82,8 +82,12 @@ class NasaPowerReplay:
                 return a if a is not None else b if b is not None else default
             return a + (b - a) * frac
 
-        record = self.records[i0]
-        observed = (record.lst - timedelta(hours=self.lon_deg / 15.0)).replace(tzinfo=timezone.utc)
+        lower = self.records[i0].lst
+        upper = self.records[i1].lst
+        if upper <= lower:
+            upper += timedelta(hours=hours)
+        observed_lst = lower + (upper - lower) * frac
+        observed = (observed_lst - timedelta(hours=self.lon_deg / 15.0)).replace(tzinfo=timezone.utc)
         return ReplayWeather(
             ghi_w_m2=max(0.0, lerp("ghi", 0.0)),
             ghi_clear_w_m2=lerp("ghi_clear", None),

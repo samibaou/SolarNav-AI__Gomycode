@@ -127,9 +127,6 @@ class CycleResult(FrozenModel):
 class SimulationStepRequest(FrozenModel):
     step_minutes: float | None = Field(default=None, gt=0.0, le=180.0)
 
-
-    
-
 class WeatherForecastMetrics(FrozenModel):
     avg_cloud_pct: float | None = None
     total_rain_mm: float | None = None

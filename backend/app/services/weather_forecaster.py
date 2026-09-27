@@ -24,7 +24,16 @@ class WeatherForecasterService:
         try:
             res = requests.get(self.api_url, params=params, timeout=5)
             res.raise_for_status()
-            df = pd.DataFrame(res.json()["hourly"]).tail(24)
+            df = pd.DataFrame(res.json()["hourly"])
+            df["time"] = pd.to_datetime(df["time"], errors="coerce")
+            if df["time"].isna().all():
+                raise ValueError("Open-Meteo hourly timestamps unavailable")
+            first_day = df["time"].dropna().min().normalize()
+            tomorrow = first_day + pd.Timedelta(days=1)
+            day_after = tomorrow + pd.Timedelta(days=1)
+            df = df[(df["time"] >= tomorrow) & (df["time"] < day_after)]
+            if df.empty:
+                raise ValueError("Open-Meteo tomorrow slice unavailable")
             
             avg_cloud = float(df['cloud_cover'].mean())
             total_rain = float(df['precipitation'].sum())

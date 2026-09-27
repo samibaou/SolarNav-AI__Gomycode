@@ -192,6 +192,20 @@ def test_replay_uses_zero_based_day_of_year_mapping():
     assert weather.ghi_w_m2 == 200.0
 
 
+def test_replay_observed_at_tracks_interpolated_time():
+    replay = NasaPowerReplay(
+        [
+            ReplayRecord(datetime(2024, 1, 1, 0), 100.0, None, 20.0, 1.0),
+            ReplayRecord(datetime(2024, 1, 1, 1), 200.0, None, 20.0, 1.0),
+        ],
+        lon_deg=0.0,
+        label="test replay",
+    )
+    weather = replay.at(datetime(2026, 1, 1, 0, 30, tzinfo=timezone.utc))
+    assert weather.ghi_w_m2 == 150.0
+    assert weather.observed_at == datetime(2024, 1, 1, 0, 30, tzinfo=timezone.utc)
+
+
 def test_swpc_xrays_chooses_latest_sample_by_parsed_timestamp():
     value, observed_at = parse_swpc_xrays(
         [
