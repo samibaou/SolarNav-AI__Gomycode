@@ -91,6 +91,7 @@ def test_earth_live_uses_open_meteo_and_marks_every_source():
     assert 0 <= data.sun.azimuth_deg < 360 and data.sun.elevation_deg > 40   # early afternoon in Ouarzazate
     sw = data.space_weather
     assert sw.level == "none" and sw.risk_flags == () and sw.recommended_action is None
+    assert sw.validation_gate == "auto"
     assert sw.xray_class == "B6.9" and sw.solar_wind_speed_km_s == 396.3 and sw.imf_bz_nt == -2.07
     assert {m.status for m in sw.sources} == {"live"}
     # Open-Meteo request asks for SI wind and the three irradiance components.
@@ -286,6 +287,7 @@ def test_moderate_space_weather_does_not_stow():
     apis = FakeApis(SWPC_WIND_URL=[{"time_tag": "2026-09-27T13:50:00", "active": True, "proton_speed": 650.0}])
     sw = make_service(apis).snapshot("earth").space_weather
     assert sw.level == "moderate" and sw.recommended_action is None and sw.risk_flags == ()
+    assert sw.validation_gate == "auto"
 
 
 def test_old_events_outside_24h_are_ignored():

@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -96,7 +97,7 @@ def lunar_raw_input_range(
     if days <= 0 or step_minutes <= 0:
         raise ValueError("days and step_minutes must be > 0")
     start = to_utc(start)
-    count = int(days * 1440 / step_minutes)
+    count = math.ceil(days * 1440 / step_minutes)
     timestamps = [start + timedelta(minutes=i * step_minutes) for i in range(count)]
     return lunar_raw_input_series(timestamps, **kwargs)
 

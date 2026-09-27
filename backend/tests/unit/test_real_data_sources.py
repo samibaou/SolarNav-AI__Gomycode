@@ -85,6 +85,19 @@ def test_lunar_series_rejects_invalid_range():
         lunar_raw_input_range(WHEN, days=0)
 
 
+def test_lunar_range_covers_partial_final_interval(monkeypatch):
+    seen = {}
+
+    def fake_series(timestamps, **kwargs):
+        seen["timestamps"] = timestamps
+        return []
+
+    monkeypatch.setattr("backend.app.modules.data_twin.live_source.lunar_raw_input_series", fake_series)
+    lunar_raw_input_range(WHEN, days=1, step_minutes=100)
+    assert len(seen["timestamps"]) == 15
+    assert seen["timestamps"][-1] == WHEN + timedelta(minutes=14 * 100)
+
+
 def test_lunar_series_accepts_empty_timestamps():
     assert lunar_raw_input_series([]) == []
 

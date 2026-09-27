@@ -261,8 +261,8 @@ class LiveDataService:
             risk_flags=("SPACE_WEATHER",) if strong else (),
             recommended_action="STOW" if strong else None,
             # Moon: no magnetosphere nor atmosphere, the policy stows at once.
-            # Earth: the hazard is mostly indirect, an operator validates the STOW.
-            validation_gate="auto" if mode == "moon" else "operator",
+            # Earth: the hazard is mostly indirect, so an operator validates only a strong-event STOW.
+            validation_gate="operator" if mode == "earth" and strong else "auto",
             reasons=tuple(reasons),
             xray_flux_w_m2=flux, xray_class=xray_class(flux) if flux is not None else None,
             solar_wind_speed_km_s=speed, solar_wind_density_cm3=density, imf_bz_nt=bz,
