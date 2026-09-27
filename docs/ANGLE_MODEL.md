@@ -61,6 +61,9 @@ et le test des cibles mélangées fait tomber le R² à 0 (pas de fuite de donn�
 
 ## Utilisation depuis le backend
 
+Ce modèle est une expérimentation appelable par code ou par script; il n'est pas chargé par l'API ni par le cycle courant.
+Le cycle applicatif charge uniquement `models/power_model.joblib` via `PowerPredictor`; en son absence, il utilise le fallback physique.
+
 ```python
 from backend.app.modules.data_twin.ephemeris import sun_from_earth_orbit
 from backend.app.modules.data_twin.satellite_source import get_satellite_position

@@ -130,12 +130,13 @@ class SimulationStepRequest(FrozenModel):
     
 
 class WeatherForecastMetrics(BaseModel):
-    avg_cloud_pct: float
-    total_rain_mm: float
-    max_wind_kmh: float
-    expected_radiation_w_m2: float
+    avg_cloud_pct: float | None = None
+    total_rain_mm: float | None = None
+    max_wind_kmh: float | None = None
+    expected_radiation_w_m2: float | None = None
 
 class WeatherStrategyResponse(BaseModel):
+    data_origin: Literal["live", "unavailable"]
     status: str
     action_plan: str
     mode: str

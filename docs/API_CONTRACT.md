@@ -34,4 +34,9 @@ Every block carries its `source` (`label`, `status` live/cache/fallback, `update
 Cached 5–15 min per source; failures fall back to last known value → NASA POWER replay → simulation.
 Needs `NASA_API_KEY` in `.env` (empty = `DEMO_KEY`, 50 requests/day).
 
+## GET `/weather/forecast`
+Earth weather strategy from Open-Meteo. `data_origin` is `live` when the forecast was fetched;
+if the service is unavailable, it is `unavailable`, all metrics are `null`, and no weather action is recommended.
+Unavailable data is never replaced with fabricated forecast values.
+
 Frontend and backend must treat `TwinState` in `backend/app/core/contracts.py` as the shared contract.

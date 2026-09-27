@@ -31,7 +31,14 @@ class WeatherForecasterService:
             max_wind = float(df['wind_speed_10m'].max())
             avg_rad = float(df['direct_radiation'].mean())
         except Exception:
-            avg_cloud, total_rain, max_wind, avg_rad = 15.0, 0.0, 12.0, 500.0
+            return WeatherStrategyResponse(
+                data_origin="unavailable",
+                status="DONNÉES INDISPONIBLES",
+                action_plan="Aucune stratégie météo calculée; l’état courant est conservé.",
+                mode="UNAVAILABLE",
+                color_code="#64748b",
+                metrics=WeatherForecastMetrics(),
+            )
 
         # Règle de décision stratégique
         if max_wind > 70:
@@ -42,6 +49,7 @@ class WeatherForecasterService:
             status, action, mode, color = "☀️ OPTIMAL", "Suivi dynamique de la trajectoire solaire.", "ACTIVE_TRACKING", "#10b981"
 
         return WeatherStrategyResponse(
+            data_origin="live",
             status=status,
             action_plan=action,
             mode=mode,
