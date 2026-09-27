@@ -1,4 +1,5 @@
 .venv/
+venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -9,3 +10,4 @@ models/*.joblib
 data/processed/
 node_modules/
 .DS_Store
+venv/

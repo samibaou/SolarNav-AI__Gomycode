@@ -6,6 +6,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 
+
 class FrozenModel(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
@@ -124,3 +125,19 @@ class CycleResult(FrozenModel):
 
 class SimulationStepRequest(FrozenModel):
     step_minutes: float | None = Field(default=None, gt=0.0, le=180.0)
+
+
+    
+
+class WeatherForecastMetrics(BaseModel):
+    avg_cloud_pct: float
+    total_rain_mm: float
+    max_wind_kmh: float
+    expected_radiation_w_m2: float
+
+class WeatherStrategyResponse(BaseModel):
+    status: str
+    action_plan: str
+    mode: str
+    color_code: str
+    metrics: WeatherForecastMetrics
