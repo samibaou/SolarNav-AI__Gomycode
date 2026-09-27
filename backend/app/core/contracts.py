@@ -6,6 +6,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 
+
 class FrozenModel(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
@@ -29,6 +30,14 @@ class SunState(FrozenModel):
 
 
 class PanelState(FrozenModel):
+    """Panel orientation.
+
+    tilt_deg: angle from the horizontal, 0 = flat, 90 = vertical.
+    azimuth_deg: compass bearing of the panel normal,
+    0 = North, 90 = East, 180 = South, 270 = West, in [0, 360).
+    The Sun uses the same azimuth convention (SunState).
+    """
+
     tilt_deg: float = Field(ge=0.0, le=90.0)
     azimuth_deg: float = Field(ge=0.0, lt=360.0)
 
@@ -97,7 +106,8 @@ class OptimizationResult(FrozenModel):
 
 
 class Decision(FrozenModel):
-    action: Literal["MOVE", "HOLD"]
+    # STOW: safety position; target_tilt_deg = stow tilt (flat for wind, steep for hail), azimuth kept.
+    action: Literal["MOVE", "HOLD", "STOW"]
     target_tilt_deg: float = Field(ge=0.0, le=90.0)
     target_azimuth_deg: float = Field(ge=0.0, lt=360.0)
     reason: str
@@ -115,3 +125,20 @@ class CycleResult(FrozenModel):
 
 class SimulationStepRequest(FrozenModel):
     step_minutes: float | None = Field(default=None, gt=0.0, le=180.0)
+
+
+    
+
+class WeatherForecastMetrics(BaseModel):
+    avg_cloud_pct: float | None = None
+    total_rain_mm: float | None = None
+    max_wind_kmh: float | None = None
+    expected_radiation_w_m2: float | None = None
+
+class WeatherStrategyResponse(BaseModel):
+    data_origin: Literal["live", "unavailable"]
+    status: str
+    action_plan: str
+    mode: str
+    color_code: str
+    metrics: WeatherForecastMetrics
