@@ -8,6 +8,9 @@ def apply_decision(twin: DigitalTwin, decision: Decision, optimization: Optimiza
     """Apply only the optimizer-approved target; reject arbitrary LLM angles."""
     if decision.action == "HOLD":
         return twin.state
+    if decision.action == "STOW":
+        # Safety position: not an optimizer target, so it bypasses the optimizer check.
+        return twin.move_panel(tilt_deg=decision.target_tilt_deg, azimuth_deg=twin.state.panel.azimuth_deg)
 
     best = optimization.best
     if (

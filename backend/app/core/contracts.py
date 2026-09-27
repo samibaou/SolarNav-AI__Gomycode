@@ -30,6 +30,14 @@ class SunState(FrozenModel):
 
 
 class PanelState(FrozenModel):
+    """Panel orientation.
+
+    tilt_deg: angle from the horizontal, 0 = flat, 90 = vertical.
+    azimuth_deg: compass bearing of the panel normal,
+    0 = North, 90 = East, 180 = South, 270 = West, in [0, 360).
+    The Sun uses the same azimuth convention (SunState).
+    """
+
     tilt_deg: float = Field(ge=0.0, le=90.0)
     azimuth_deg: float = Field(ge=0.0, lt=360.0)
 
@@ -98,7 +106,8 @@ class OptimizationResult(FrozenModel):
 
 
 class Decision(FrozenModel):
-    action: Literal["MOVE", "HOLD"]
+    # STOW: safety position; target_tilt_deg = stow tilt (flat for wind, steep for hail), azimuth kept.
+    action: Literal["MOVE", "HOLD", "STOW"]
     target_tilt_deg: float = Field(ge=0.0, le=90.0)
     target_azimuth_deg: float = Field(ge=0.0, lt=360.0)
     reason: str
