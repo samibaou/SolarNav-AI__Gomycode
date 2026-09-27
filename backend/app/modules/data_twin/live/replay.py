@@ -71,7 +71,8 @@ class NasaPowerReplay:
         """Record for today's local solar hour, on day (day-of-year mod file length) of the file."""
         hours = len(self.records)
         days = max(1, math.ceil(hours / 24))
-        t = (now.timetuple().tm_yday % days) * 24 + local_solar_hour(now, self.lon_deg)
+        day_index = (now.timetuple().tm_yday - 1) % days
+        t = day_index * 24 + local_solar_hour(now, self.lon_deg)
         i0 = int(t) % hours
         i1, frac = (i0 + 1) % hours, t - int(t)
 

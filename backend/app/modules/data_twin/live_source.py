@@ -62,6 +62,8 @@ def lunar_raw_input_series(
 
     Dust keeps accumulating along the series, starting from `days_since_cleaning`.
     """
+    if not timestamps:
+        return []
     suns = sun_from_moon_series(timestamps, lat_deg, lon_deg)
     start = suns[0].timestamp
     inputs = []

@@ -13,7 +13,7 @@ import pytest
 from backend.app.core.contracts import RawInput
 from backend.app.modules.data_twin import satellite_source
 from backend.app.modules.data_twin.ephemeris import _skyfield, position_from_tle, sun_from_moon_series
-from backend.app.modules.data_twin.live_source import lunar_raw_input, lunar_raw_input_range
+from backend.app.modules.data_twin.live_source import lunar_raw_input, lunar_raw_input_range, lunar_raw_input_series
 from backend.app.modules.data_twin.pipeline import build_twin_state
 
 WHEN = datetime(2026, 9, 27, 12, 0, tzinfo=timezone.utc)
@@ -83,6 +83,10 @@ def test_lunar_series_accumulates_dust():
 def test_lunar_series_rejects_invalid_range():
     with pytest.raises(ValueError):
         lunar_raw_input_range(WHEN, days=0)
+
+
+def test_lunar_series_accepts_empty_timestamps():
+    assert lunar_raw_input_series([]) == []
 
 
 @requires_ephemeris

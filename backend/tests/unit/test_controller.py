@@ -36,7 +36,7 @@ def test_controller_applies_optimizer_target(twin_state, test_settings):
 
 def test_controller_applies_stow_without_optimizer_check(twin_state, test_settings):
     optimization = optimize(twin_state, test_settings)
-    decision = Decision(action="STOW", target_tilt_deg=0.0, target_azimuth_deg=twin_state.panel.azimuth_deg, reason="high wind", explanation_source="template")
+    decision = Decision(action="STOW", target_tilt_deg=0.0, target_azimuth_deg=180.0, reason="high wind", explanation_source="template")
     after = apply_decision(DigitalTwin(twin_state), decision, optimization)
     assert after.panel.tilt_deg == 0.0
-    assert after.panel.azimuth_deg == twin_state.panel.azimuth_deg
+    assert after.panel.azimuth_deg == 180.0

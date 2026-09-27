@@ -5,6 +5,7 @@ import httpx
 import pytest
 
 from backend.app.core.config import ROOT_DIR
+from backend.app.modules.data_twin.live.replay import NasaPowerReplay, ReplayRecord
 from backend.app.modules.data_twin.live import sources
 from backend.app.modules.data_twin.live.service import LiveDataService
 
@@ -159,6 +160,35 @@ def test_no_cache_falls_back_to_nasa_power_replay_then_simulation():
     simulated = make_service(apis, replay_file=None).snapshot("earth").weather
     assert simulated.source.status == "fallback" and simulated.source.id == "simulation"
     assert simulated.ghi_w_m2 > 0
+
+
+def test_replay_uses_zero_based_day_of_year_mapping():
+    replay = NasaPowerReplay(
+        [
+            ReplayRecord(
+                datetime(2024, 1, 1, hour),
+                100.0 + hour,
+                None,
+                20.0,
+                1.0,
+            )
+            for hour in range(24)
+        ]
+        + [
+            ReplayRecord(
+                datetime(2024, 1, 2, hour),
+                200.0 + hour,
+                None,
+                20.0,
+                1.0,
+            )
+            for hour in range(24)
+        ],
+        lon_deg=0.0,
+        label="test replay",
+    )
+    weather = replay.at(datetime(2026, 1, 2, 0, 0, tzinfo=timezone.utc))
+    assert weather.ghi_w_m2 == 200.0
 
 
 def test_stale_cache_expires_into_fallback():
